@@ -94,8 +94,13 @@ title={#2},#1}
 \definecolor{TitleMainColor}{RGB}{25, 25, 112}
 \definecolor{TitleBackColor}{RGB}{135, 206, 250}
 
-\hypersetup{
-  pdfauthor ={Wuqiong Zhao (Teddy van Jerry)},
-  pdftitle  ={mmCEsim Documentation \& Tutorials},
-  pdfsubject={mmCEsim}
-}
+\ExplSyntaxOn
+\bool_if:NF \l__colorclass_fast_bool
+  {
+    \hypersetup{
+      pdfauthor ={Wuqiong~Zhao~(Teddy~van~Jerry)},
+      pdftitle  ={mmCEsim~Documentation~\&~Tutorials},
+      pdfsubject={mmCEsim}
+    }
+  }
+\ExplSyntaxOff
