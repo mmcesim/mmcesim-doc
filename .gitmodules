@@ -1,0 +1,3 @@
+[submodule "fig/img"]
+	path = fig/img
+	url = https://github.com/mmcesim/img.git

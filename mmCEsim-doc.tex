@@ -1,0 +1,40 @@
+\documentclass[use boldface]{beaulivre}
+\usepackage{mmcesim-doc}
+
+\begin{document}
+
+\frontmatter
+
+\TitlePage [
+    color = { main = TitleMainColor, back = TitleBackColor!60!white },
+    logo = {\includegraphics[width=2.2cm]{img/logo/mmCEsim_logo_256.png}
+      \raisebox{8mm}{\scalebox{1.3}{\rlap{\begin{tabular}{c}
+        \Huge\sffamily\bfseries\textcolor{TitleMainColor}{mmCEsim} \\
+        \url{https://mmcesim.org}
+      \end{tabular}}}}
+    }
+  ]
+  {
+    , title     = mmCEsim Documentation \& Tutorials
+    , subtitle  = {
+                    \textsc{Task-oriented mmWave Channel Estimation Simulation}\\[10pt]
+                    \normalsize Version \texttt{0.1.0}
+                  }
+    , author    = Wuqiong Zhao (Teddy van Jerry)
+    , date      = {\today{}}
+  }
+
+\chapter{Preface}
+\input{tex/preface.tex}
+
+\tableofcontents
+
+\mainmatter
+
+\part{Preliminary}
+\parttext{Make preparations before we start.}
+
+\printindex
+
+\end{document}
+\endinput

@@ -274,3 +274,10 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+# macOS
+.DS_Store
+
+# This project
+*.mst
+svg-inkscape
