@@ -1,4 +1,4 @@
-\ProvidesPackage{mmcesim-doc}[2022/12/28 package mmcesim-doc]
+\ProvidesPackage{mmcesim-doc}[2023/01/01 package mmcesim-doc]
 \RequirePackage{ProjLib}
 \RequirePackage{longtable}  % breakable tables
 \RequirePackage{tabularx}
@@ -64,11 +64,7 @@ title={#2},#1}
   columns=fixed,
   escapeinside={(*}{*)},
   numbers=left,
-  numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,
-  % firstnumber=last,
-  morekeywords={
-    std, cout, endl
-  }
+  numberstyle=\scriptsize, stepnumber=1, numbersep=5pt
 }
 
 \RequirePackage[many]{tcolorbox}
@@ -89,18 +85,34 @@ title={#2},#1}
     title={\scshape\sffamily #1}]%
 }{\end{tcolorbox}}
 
-\RequirePackage{svg}
+\newcommand{\tbhead}[1]{\textcolor{maintheme}{\textbf{#1}}}
 
 \definecolor{TitleMainColor}{RGB}{25, 25, 112}
 \definecolor{TitleBackColor}{RGB}{135, 206, 250}
 
+\RequirePackage[style=ieee, maxnames=3]{biblatex}
+\addbibresource{bib/IEEEabrv.bib}
+\addbibresource{bib/ref.bib}
+
+\setcounter{tocdepth}{1}% only to section
+
+\RequirePackage{my-tikz}
+
+\newcommand{\turnoffhypercolor}{\relax}
+
 \ExplSyntaxOn
 \bool_if:NF \l__colorclass_fast_bool
   {
-    \hypersetup{
-      pdfauthor ={Wuqiong~Zhao~(Teddy~van~Jerry)},
-      pdftitle  ={mmCEsim~Documentation~\&~Tutorials},
-      pdfsubject={mmCEsim}
-    }
+    \hypersetup
+      {
+        , pdfauthor  = { Wuqiong~Zhao~(Teddy~van~Jerry) }
+        , pdftitle   = { mmCEsim~Documentation~\&~Tutorials }
+        , pdfsubject = { mmCEsim }
+        , colorlinks = true
+        , urlcolor   = blue
+        , linkcolor  = purple
+        , citecolor  = red
+      }
+    \renewcommand{\turnoffhypercolor}{\hypersetup{hidelinks}}
   }
 \ExplSyntaxOff

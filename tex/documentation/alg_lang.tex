@@ -1,0 +1,73 @@
+\section{Data Type}
+
+\subsection{Why Need Data Type}
+Languages Python and Matlab/Octave are weakly typed
+which can be convenient for writing the code.
+However, that is problematic for implementation.
+The efficiency is not satisfactory compared to C++,
+and sometimes you may encounter ambiguous error information in Matlab.
+Therefore, for the sake of efficiency and generality,
+ALG language is designed to be \textbf{strongly typed}.
+
+\subsection{Structure}
+The type specification is very simple,
+because ALG language concentrates on matrices.
+Basically, the structure of ALG language is
+\[
+  \text{prefix}+\text{dimension}+\text{suffix}.
+\]
+For example, \texttt{f2c} means a matrix (dimension is 2) with data type as float
+and property as a constant.
+
+\subsection{Specifiers}
+
+\subsubsection{Prefix}
+
+\paragraph{Basic Type Prefix}
+
+Basic type just names the element type.
+They are shown in Table~\ref{d:tab:basic_type_prefix}.
+\begin{table}[htbp]
+  \caption{Basic type prefix.}
+  \label{d:tab:basic_type_prefix}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{ccYYY}
+    \toprule
+    \tbhead{Predix} & \tbhead{Type} & \tbhead{C++ Type} & \tbhead{Python Type} & \tbhead{Matlab/Octave Type} \\
+    \midrule
+    \texttt{c} & Complex &
+    \href{https://arma.sourceforge.net/docs.html\#cx_double}{\texttt{cx\_double}}
+    & \texttt{complex} &
+    \href{https://www.mathworks.com/help/matlab/ref/complex.html}{\texttt{complex}} \\
+    \texttt{f} & Float & \texttt{double} & \texttt{double} &
+    \href{https://www.mathworks.com/help/matlab/ref/double.html}{\texttt{double}} \\
+    \texttt{i} & Integer & \texttt{int} & \texttt{int} &
+    \href{https://www.mathworks.com/help/matlab/ref/int64.html}{\texttt{int64}} \\
+    \texttt{u} & Unsigned Integer &
+    \href{https://arma.sourceforge.net/docs.html\#uword}{\texttt{uword}} &
+    \texttt{uint} &
+    \href{https://www.mathworks.com/help/matlab/ref/uint64.html}{\texttt{uint64}} \\
+    \texttt{b} & Boolean & \texttt{bool} & \texttt{bool} &
+    \href{https://www.mathworks.com/help/matlab/ref/logical.html}{\texttt{logical}} \\
+    \texttt{s} & String &
+    \href{https://en.cppreference.com/w/cpp/string/basic_string}{\texttt{std::string}}
+    & \texttt{str} &
+    \href{https://www.mathworks.com/help/matlab/ref/string.html}{\texttt{string}} \\
+    \texttt{h} & Character & \texttt{char} & \texttt{char} &
+    \href{https://www.mathworks.com/help/matlab/ref/char.html}{\texttt{char}} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\paragraph{Alias Prefix}
+Alias prefixes not only set the element type,
+but also the dimension.
+They are the one character alias for a two-character type.
+
+\section{Function}
+
+\section{Calculation (CALC)}
+
+\section{Macro}
+
+\section{ALG Library}

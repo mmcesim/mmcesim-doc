@@ -1,0 +1,50 @@
+Before diving into documentation details, let's first have a preview of mmCEsim.
+Maybe you are not sure whether your research or study need this powerful tool,
+then read this chapter to have a glimpse of mmCEsim.
+
+\section{Introduction}
+
+The application is dedicated to simulate
+millimeter wave (mmWave) channel estimation:
+\[
+  \text{mmCEsim}
+  =\text{\textbf{mm}Wave}
+  +\text{\textbf{C}hannel \textbf{E}stimation}
+  +\text{\textbf{sim}ulation},
+\]
+where reconfigurable intelligent surface (RIS),
+also known as intelligent reflecting surface (IRS) \cite{wu2019towards} is supported
+for multiple input multiple output (MIMO) systems.
+
+\begin{figure}[htbp]
+  \includegraphics[width=\linewidth]{img/badge/mmCEsim_badge.png}
+  \caption{mmCEsim banner.}
+\end{figure}
+
+We offer a task-oriented simulation software for researchers to focus on algorithms only
+without being bothered by coding.
+
+\section{Features}
+
+Here is a list of basic features of mmCEsim:
+\begin{itemize}
+  \item Task-oriented mmWave channel estimation formulation;
+  \item Customizable system model;
+  \item Extendable algorithms with our designed ALG language;
+  \item Multiple RISs support;
+  \item Automatic report generation (in plain text and \LaTeX{});
+  \item Well-written documentation with examples and tutorials.
+\end{itemize}
+
+\section{Algorithm Background}
+
+The task-oriented channel estimation for (RIS-assisted) mmWave MIMO systems
+is implemented with compressed sensing (CS),
+which exploits the sparsity of mmWave channels.
+
+\section{Software Implementation}
+Based on the algorithm background,
+we implement this software with
+command line interface (CLI),
+graphic user interface (GUI),
+web application and a VS Code extension.
