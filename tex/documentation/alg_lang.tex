@@ -87,7 +87,7 @@ A list of alias prefixes is shown in Table~\ref{d:tab:alias_prefix}.
   \texttt{v}, \texttt{r}, \texttt{m} and \texttt{t} are all for \textbf{complex} types.
   For a non-complex type, you need to use the normal two-character way.
 
-  Row vector (\texttt{t}) is actually regarded as a matrix for simplicity,
+  Row vector (\texttt{r}) is actually regarded as a matrix for simplicity,
   so its dimension is still 2.
   Only column vector (\texttt{c}) is the real vector.
   But there can be differences in terms of \func{INIT},
@@ -277,6 +277,7 @@ c = \abs{b_{:, 3}} + \pow(b_{}, 2) # use : in subscript & use {} for function
   \end{lstlisting}
   Equivalent C++ Code
   \begin{lstlisting}[language=c++,morekeywords={sin,abs,exp2,pow}]
+a = b + 2;
 a = arma::sin(b) * c;
 a = b.t() + c.i();
 c = b(2, 3);
