@@ -281,3 +281,7 @@ TSWLatexianTemp*
 # This project
 *.mst
 svg-inkscape
+
+# colorist configutation
+beaulivre.cls
+colorist*.sty

@@ -1,4 +1,4 @@
-\section{Data Type}
+\section{Data Type}\index{data type}\label{d:sec:data_type}
 
 \subsection{Why Need Data Type}
 Languages Python and Matlab/Octave are weakly typed
@@ -14,60 +14,351 @@ The type specification is very simple,
 because ALG language concentrates on matrices.
 Basically, the structure of ALG language is
 \[
-  \text{prefix}+\text{dimension}+\text{suffix}.
+  \text{\hyperref[d:subsubsec:prefix]{prefix}}+
+  \text{\hyperref[d:subsubsec:dim]{dimension}}+
+  \text{\hyperref[d:subsubsec:suffix]{suffix}}.
 \]
 For example, \texttt{f2c} means a matrix (dimension is 2) with data type as float
 and property as a constant.
 
-\subsection{Specifiers}
+\subsection{Specifiers}\index{specifier}
 
-\subsubsection{Prefix}
+\subsubsection{Prefix}\index{prefix}\label{d:subsubsec:prefix}
 
-\paragraph{Basic Type Prefix}
+\paragraph{Basic Type Prefix}\index{prefix!basic~type}
 
 Basic type just names the element type.
 They are shown in Table~\ref{d:tab:basic_type_prefix}.
 \begin{table}[htbp]
-  \caption{Basic type prefix.}
+  \caption{ALG variable basic type prefix.}
   \label{d:tab:basic_type_prefix}
   \renewcommand{\arraystretch}{1.2}
   \begin{tabularx}{\linewidth}{ccYYY}
     \toprule
-    \tbhead{Predix} & \tbhead{Type} & \tbhead{C++ Type} & \tbhead{Python Type} & \tbhead{Matlab/Octave Type} \\
+    \tbhead{Prefix} & \tbhead{Type} & \tbhead{C++ Type} & \tbhead{Python Type} & \tbhead{\textsc{Matlab}/Octave Type} \\
     \midrule
-    \texttt{c} & Complex &
+    \texttt{c}\indexprefix{c} & Complex &
     \href{https://arma.sourceforge.net/docs.html\#cx_double}{\texttt{cx\_double}}
     & \texttt{complex} &
     \href{https://www.mathworks.com/help/matlab/ref/complex.html}{\texttt{complex}} \\
-    \texttt{f} & Float & \texttt{double} & \texttt{double} &
+    \texttt{f}\indexprefix{f} & Float & \texttt{double} & \texttt{double} &
     \href{https://www.mathworks.com/help/matlab/ref/double.html}{\texttt{double}} \\
-    \texttt{i} & Integer & \texttt{int} & \texttt{int} &
+    \texttt{i}\indexprefix{i} & Integer & \texttt{int} & \texttt{int} &
     \href{https://www.mathworks.com/help/matlab/ref/int64.html}{\texttt{int64}} \\
-    \texttt{u} & Unsigned Integer &
+    \texttt{u}\indexprefix{u} & Unsigned Integer &
     \href{https://arma.sourceforge.net/docs.html\#uword}{\texttt{uword}} &
     \texttt{uint} &
     \href{https://www.mathworks.com/help/matlab/ref/uint64.html}{\texttt{uint64}} \\
-    \texttt{b} & Boolean & \texttt{bool} & \texttt{bool} &
+    \texttt{b}\indexprefix{b} & Boolean & \texttt{bool} & \texttt{bool} &
     \href{https://www.mathworks.com/help/matlab/ref/logical.html}{\texttt{logical}} \\
-    \texttt{s} & String &
+    \texttt{s}\indexprefix{s} & String &
     \href{https://en.cppreference.com/w/cpp/string/basic_string}{\texttt{std::string}}
     & \texttt{str} &
     \href{https://www.mathworks.com/help/matlab/ref/string.html}{\texttt{string}} \\
-    \texttt{h} & Character & \texttt{char} & \texttt{char} &
+    \texttt{h}\indexprefix{h} & Character & \texttt{char} & \texttt{char} &
     \href{https://www.mathworks.com/help/matlab/ref/char.html}{\texttt{char}} \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-\paragraph{Alias Prefix}
+\paragraph{Alias Prefix}\index{prefix!alias}
 Alias prefixes not only set the element type,
 but also the dimension.
 They are the one character alias for a two-character type.
+A list of alias prefixes is shown in Table~\ref{d:tab:alias_prefix}.
+\begin{table}[htbp]
+  \caption{ALG variable alias prefix.}
+  \label{d:tab:alias_prefix}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{YYY}
+    \toprule
+    \tbhead{Alias Prefix} & \tbhead{Type} & \tbhead{Equivalent Two-character Type} \\
+    \midrule
+    \texttt{v}\indexprefix{v} & (Column) Vector & \texttt{c1} \\
+    \texttt{r}\indexprefix{r} & Row Vector & \texttt{c2} \\
+    \texttt{m}\indexprefix{m} & Matrix & \texttt{c2} \\
+    \texttt{t}\indexprefix{t} & Tensor & \texttt{c3} \\
+    \texttt{d}\indexprefix{d} & Double & \texttt{f0} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
-\section{Function}
+\begin{warning}
+  \texttt{v}, \texttt{r}, \texttt{m} and \texttt{t} are all for \textbf{complex} types.
+  For a non-complex type, you need to use the normal two-character way.
 
-\section{Calculation (CALC)}
+  Row vector (\texttt{t}) is actually regarded as a matrix for simplicity,
+  so its dimension is still 2.
+  Only column vector (\texttt{c}) is the real vector.
+  But there can be differences in terms of \func{INIT},
+  so it should not be confused with \texttt{m}.
+\end{warning}
 
-\section{Macro}
+\subsubsection{Dimension}\index{dimension}\label{d:subsubsec:dim}
 
-\section{ALG Library}
+Dimensions range from 0 to 3.
+Details are shown in Table~\ref{d:tab:dim}.
+\begin{table}[htbp]
+  \caption{ALG variable dimension.}
+  \label{d:tab:dim}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{YYY}
+    \toprule
+    \tbhead{Dimension} & \tbhead{Type} & \tbhead{C++ Type} \\
+    \midrule
+    0 & Scalar & --- \\
+    1 & Vector &
+    \href{https://arma.sourceforge.net/docs.html\#Col}{\texttt{Col}} \\
+    2 & Matrix &
+    \href{https://arma.sourceforge.net/docs.html\#Mat}{\texttt{Mat}} \\
+    3 & Tensor &
+    \href{https://arma.sourceforge.net/docs.html\#Cube}{\texttt{Cube}} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\begin{warning}
+  Dimension for a scalar can not be omitted.
+\end{warning}
+
+Please note that matrices are stored in \textbf{column major} order,
+which is the default order in C++ (Armadillo) and Matlab/Octave. In
+Python (NumPy), it is equivalent to the option
+\lstinline[language=c,morekeywords={order}]{order='F'}.
+
+\begin{warning}
+  You should always remember the column \textbf{major order},
+  especially if you use are accustomed to Python.
+  The order will make a big difference to matrix reshape and vectorization.
+\end{warning}
+
+\subsubsection{Suffix}\index{suffix}\label{d:subsubsec:suffix}
+All suffixes of ALG variables are shown in Table~\ref{d:tab:suffix}.
+
+\begin{table}[htbp]
+  \caption{ALG variable suffix.}
+  \label{d:tab:suffix}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{cYYYY}
+    \toprule
+    \tbhead{Suffix} & \tbhead{Meaning} & \tbhead{C++} & \tbhead{Python} & \tbhead{\textsc{Matlab}/Octave} \\
+    \midrule
+    \texttt{c}\indexsuffix{c} & Constant &
+    \href{https://en.cppreference.com/w/cpp/language/cv}{\texttt{const}} &
+    (None) &
+    \href{https://www.mathworks.com/help/matlab/ref/persistent.html}{\texttt{persistent}} \\
+    \texttt{r}\indexsuffix{r} & Reference &
+    \href{https://en.cppreference.com/w/cpp/language/cv}{\texttt{reference}}
+    & (None) & (None) \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\begin{tip}
+  Two suffixes cannot be used together and there is also no need to do so.
+  The use of \texttt{r} is mainly in \texttt{function},
+  allowing a parameter to be changed inside the function body.
+\end{tip}
+
+\section{Function}\index{function}
+
+\subsection{Syntax Basics}
+The initiative of proposing a new programming language for algorithm
+implementation is based on the multi-backend design of mmCEsim.
+The language is specially designed so that it can be exported to C++
+(with Armadillo), Python (with NumPy) and \textsc{Matlab}/Octave easily.
+
+Every line of ALG language calls a function.
+Let's first have a look at its basic structure before we cover its details.
+\begin{lstlisting}[language=mmcesim-sim, morekeywords={FUNC}]
+ret1::type1 ret2 = FUNC param1 param2::type2 key1=value1 key2=value2::type3 # com.
+\end{lstlisting}
+It may look like an assembly language at the first glance,
+due to all parameters are separated by space.
+But it is actually much more convenient.
+Here are some basic rules:
+\begin{itemize}
+  \item All tokens are separated by space.
+  \item Function names are in all upper cases, like \lfunc{CALC}, \func{WHILE}.
+  \item Indentation does not matter. Blocks are ended with \lfunc{END}.
+  \item The function line is mainly composed of three parts:
+  \textbf{return values}, \textbf{function name}, \textbf{parameters},
+  in the left to right direction.
+  \item Some functions may not have return values, and you may also omit the return values.
+  If there are return values, there is a \texttt{=} between return values and function names.
+  \item Function name is the first word on the right of \texttt{=} (if there are return values)
+  or the first word of line (if there is no return value).
+  \item Like Python, parameters can be passed in by two ways:
+  \begin{enumerate}
+    \item \textbf{value in position}: Like \texttt{param1} and \texttt{param2} in the above example.
+    Parameters in different positions correspond to different usages in the function.
+    This is the only way in C++.
+    \item \textbf{key and value}: Parameters can also be specified using key and its
+    corresponding value. \texttt{value1} and \texttt{value2} are passed in using this method.
+    It should be noted that there should be no space around the \texttt{=} between key and value.
+  \end{enumerate}
+  There are some special cases that parameters are viewed as a whole,
+  for example \lfunc{COMMENT} and \lfunc{CALC}.
+  \item If a parameter contains space or special characters, you need to use the
+  double quotes like \texttt{"param with space"} and escape special characters as in
+  C++ and Python.
+  \item You may optionally specify the type of return value and parameters with \texttt{::}
+  after the value. For example, in the above example \texttt{dtype1}, \texttt{dtype2} and \texttt{dtype3}
+  are type specifications for \texttt{ret1}, \texttt{param2} and \texttt{value2}, respectively.
+  For more information about data type, please refer to \hyperref[d:sec:data_type]{data type of ALG language}.
+  \item Like Python, the backslash (\texttt{\textbackslash}\indextt{\textbackslash}) at the end of the line can be used for continuing
+  the function on next line.
+  \item Comments start with the hash (\texttt{\#}\indextt{\#}) like Python.
+\end{itemize}
+
+\begin{warning}
+  There should be no space around the \texttt{=} between key and value for parameters.
+  For example, \texttt{key=val} is valid while \texttt{key = val} is forbidden.
+\end{warning}
+
+Special rules may be applied for different functions.
+Please refer to the specific documentation for each function.
+
+\funcsec{BRANCH}
+Declare start of the scope of job algorithms.
+\subsubsection*{Explanations}
+This is useful in \texttt{estimation}.
+Contents between \func{BRANCH} and \func{MERGE}
+will be repeated for different algorithms.
+So you need to place compressed sensing estimation
+\func{ESTIMATE} and \func{RECOVER}
+inside.
+% This is useful in [`estimation`](../cli/config#estimation).
+% Contents between `BRANCH` and [`MERGE`](#merge)
+% will be repeated for different algorithms.
+% So you need to place compressed sensing estimation
+% [`ESTIMATE`](#estimate) and [`RECOVER`](#recover)
+% inside.
+\subsubsection*{Example}
+\href{https://github.com/mmcesim/examples/blob/6500ae3021e06b583897f9554e694e86584064f0/MIMO_OFDM_OMP/MIMO_wideband.sim#L90}{Example of OFDM OMP}.
+
+\funcsec{BREAK}
+Break from a block (for \func{FOR}, \func{FOREVER}, \func{LOOP}, \func{WHILE}).
+\subsubsection*{Explanations}
+The same as \texttt{break} in C++, Python and \textsc{Matlab}/Octave.
+This function takes no parameter.
+\subsubsection*{Example}
+Example with \func{FOREVER}.
+
+\funcsec{CALC}
+Make arithmetic calculations.
+\subsubsection*{Explanations}
+There are two kinds of \texttt{CALC} usage: \textbf{inline} and \textbf{standalone}:
+\begin{itemize}
+  \item \textbf{inline}: The contents to be calculated are placed in a set of dollar signs,
+  like \LaTeX{} syntax: \ALG{$some operations to be calculated$}.
+  \item \textbf{Standalone}: This is like a normal function, with function name as \func{CALC}.
+  You may also omit the function name \func{CALC} since it is the default function name
+  if nothing is specified.
+  Therefore, \ALG{result = CALC your expression} is equivalent to \ALG{result = your expression}.
+\end{itemize}
+For more information about the \func{CALC} syntax,
+please refer to \S\ref{d:sec:calc}.
+\begin{warning}
+  For safety, you should not use anything other than ANSI characters in \func{CALC} functions.
+  Otherwise, there can be undefined behaviour.
+\end{warning}
+If you want the calculation result to be a new variable,
+you may use function \func{NEW}.
+\subsubsection*{Example}
+\begin{example}[Example of CALC]~
+  \begin{lstlisting}[language=mmcesim-sim]
+a = CALC b + 2 # explicit CALC function
+a = \sin(b) @ c # implicit CALC function
+a = b^H + c^{-1} # conjugate transpose and inverse
+c = b_{2, 3} # get element of a matrix
+c = \abs{b_{:, 3}} + \pow(b_{}, 2) # use : in subscript & use {} for function
+\exp2(a + c .* d) ./ e^T -f_{:,3,1:index} # element-wise operator and subscript : range
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++,morekeywords={sin,abs,exp2,pow}]
+a = arma::sin(b) * c;
+a = b.t() + c.i();
+c = b(2, 3);
+c = arma::abs(b(arma::span::all, 3)) + arma::pow(b, 2);
+arma::exp2(a + c % d) / e.st() - f(arma::span::all, 3, arma::span(1, index));
+  \end{lstlisting}
+\end{example}
+
+\funcsec{CALL}
+Call a custom function defined by \lfunc{FUNCTION}.
+
+\funcsec{COMMENT}
+Place a line of comment in the exported code.
+\subsubsection*{Explanations}
+All contents after the function keyword \func{COMMENT} are considered as comments.
+\subsubsection*{Example}
+\begin{example}[Example of COMMENT]~
+  \begin{lstlisting}[language=mmcesim-sim]
+COMMENT Hi, this is a comment!
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++]
+// Hi, this is a comment!
+  \end{lstlisting}
+  Equivalent Python Code
+  \begin{lstlisting}[language=python]
+# Hi, this is a comment!
+  \end{lstlisting}
+  Equivalent \textsc{Matlab}/Octave Code
+  \begin{lstlisting}[language=matlab]
+% Hi, this is a comment!
+  \end{lstlisting}
+\end{example}
+
+\funcsec{CPP}
+Write standard C++ contents.
+\subsubsection*{Explanations}
+All contents after the \func{CPP} keywords are copied to exported codes.
+For backend other than C++, this function is ignored.
+\subsubsection*{Example}
+\begin{example}[Example of CPP]~
+  \begin{lstlisting}[language=c++, morekeywords={CPP}]
+CPP std::cout << "Standard C++ Language!" << std::endl;
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++]
+std::cout << "Standard C++ Language!" << std::endl;
+  \end{lstlisting}
+  For Python, \textsc{Matlab}/Octave, nothing will happen with the \func{CPP} function.
+\end{example}
+
+\funcsec{ELSE}
+Used in \lfunc{IF} blocks.
+\subsubsection*{Explanations}
+This function implements as \texttt{else} in C++, Python and \textsc{Matlab}/Octave.
+There is no parameter for the \func{ELSE} function.
+\subsubsection*{Example}
+Example with \lfunc{IF}.
+
+\funcsec{END}
+End of a block for \lfunc{ELSE}, \func{ELIF}, \func{FUNC}, \func{FOREVER}, \lfunc{IF}, \func{LOOP}, \func{WHILE}.
+\subsubsection*{Explanations}
+In C++, this functions as \texttt{\}},
+in Python it is the indentation goes back for one block.
+In \textsc{Matlab}/Octave, it is the \texttt{end} specification.
+\subsubsection*{Example}
+Example with \func{FOR}, \func{FOREVER}, \lfunc{IF}, \func{LOOP}, \func{WHILE}.
+
+\funcsec{ESTIMATE}
+\lfunc{CALL} \hyperref[d:sec:alg_lib]{standard ALG functions} to estimate the
+sparse channel with compressed sensing (CS).
+
+\funcsec{FUNCTION}
+Start a function definition.
+\subsubsection*{Explanations}
+The function requires an \lfunc{END} to mark the end of the function.
+
+\funcsec{IF}
+Conditional statement.
+
+\section{Calculation (CALC)}\index{calculation}\index{CALC}\label{d:sec:calc}
+
+\section{Macro}\index{macro}
+
+\section{ALG Library}\index{ALG library}\label{d:sec:alg_lib}
