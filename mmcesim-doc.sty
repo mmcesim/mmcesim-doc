@@ -1,5 +1,7 @@
 \ProvidesPackage{mmcesim-doc}[2023/01/01 package mmcesim-doc]
 \RequirePackage{ProjLib}
+\RequirePackage{siunitx}
+\sisetup{detect-all}
 \RequirePackage{longtable}  % breakable tables
 \RequirePackage{tabularx}
 \RequirePackage{booktabs}
@@ -125,6 +127,42 @@ title={#2},#1}
 }{\end{tcolorbox}}
 
 \newcommand{\tbhead}[1]{\textcolor{maintheme}{\textbf{#1}}}
+\newcommand\twodigits[1]{%
+  \ifnum#1<10 0#1\else #1\fi
+}
+\newcommand{\mmCEsimDate}{%
+  \the\year/%
+  \twodigits{\the\month}/%
+  \twodigits{\the\day}%
+}
+\ExplSyntaxOn
+\DeclareDocumentCommand \history { m m o }
+  {
+    \section[#1]
+      {
+        #1\IndexDotfill
+        \href
+          {
+            \IfNoValueTF { #3 }
+              { https://github.com/mmcesim/mmcesim/releases/tag/#1 }
+              { #3 }
+          }
+          { \normalfont\textsf{\textcolor{forestgreen}{#2}} }
+      }
+  }
+\DeclareDocumentCommand \GHhash { o m }
+  {
+    \href
+      {
+        https\c_colon_str//github.com/mmcesim/
+        \IfValueTF { #1 } { #1 } { mmcesim }
+        /issues/#2
+      }
+      {
+        \texttt{\# #2}
+      }
+  }
+\ExplSyntaxOff
 
 \definecolor{TitleMainColor}{RGB}{25, 25, 112}
 \definecolor{TitleBackColor}{RGB}{135, 206, 250}

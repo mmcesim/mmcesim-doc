@@ -1,6 +1,8 @@
 \documentclass[use boldface]{beaulivre}
 \usepackage{mmcesim-doc}
 
+\newcommand{\mmCEsimVersion}{0.1.0}
+
 \begin{document}
 
 \frontmatter
@@ -18,7 +20,7 @@
     , title     = mmCEsim Documentation \& Tutorials
     , subtitle  = {
                     \textsc{Task-oriented mmWave Channel Estimation Simulation}\\[10pt]
-                    \normalsize Version \texttt{0.1.0}
+                    \normalsize Version \texttt{\mmCEsimVersion}
                   }
     , author    = Wuqiong Zhao (Teddy van Jerry)
     , date      = {\today{}}
@@ -95,6 +97,11 @@
 \parttext{Additional information about mmCEsim.}
 \chapter{Additional Resources}
 \input{tex/appendix/additional_resources.tex}
+
+\chapter{Change History}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+\input{tex/appendix/change_history.tex}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 
 \bookmarksetup{startatroot}
 \printbibliography[heading=bibintoc]
