@@ -1,9 +1,66 @@
-So far, there is no built binary for mmCEsim since it is still under development.
-However, you may clone the GitHub repository and compile it yourself.
+\section{Download Binary}
+You can download the built binary of mmCEsim from \href{https://github.com/mmcesim/mmcesim/releases}{GitHub releases}.
+The built CLI binaries include support for Linux (x86), macOS (x64 and arm) and Windows (x86).
 
-\begin{lstlisting}[language=sh, morekeywords={git, cmake, make}, alsoletter={.}]
+They all statically link to libraries, so theoretically no dependency is needed.
+
+\begin{tip}[Note]
+  Since GitHub Actions currently only provide x86\_64 machines,
+  the binary for macOS with arm architecture is built manually on my MacBook Air with an M1 chip.
+\end{tip}
+
+\section{Build from Source}
+
+Since mmCEsim is built with CMake, so you can easily build the source on Unix-based systems.
+For Windows, I think there are similar ways.
+
+On a Unix-based system, you can simply use the following code to build and install mmCEsim.
+\begin{lstlisting}[language=sh, morekeywords={git, cmake, make, sudo}, alsoletter={.}]
 git clone https://github.com/mmcesim/mmcesim.git --recurse-submodules
 cd mmcesim
-cmake .
+cmake . build
+cd build
 make
+sudo make install
 \end{lstlisting}
+
+\begin{remark}
+  The option \texttt{--recurse-submodules} is required because some dependencies of mmCEsim
+  Are managed by Git submodules.
+\end{remark}
+
+You need to have a C++ compiler that supports C++17 standard,
+and have installed the Boost library (statically) of minimum version \texttt{1.70.0} on your system.
+You can install them easily on Unix-based systems with your favourite package manager.
+For Windows users, please follow the official instruction of Boost.
+\begin{lstlisting}[language=sh, morekeywords={sudo, apt, pacman, port, brew}]
+# Debian, Ubuntu
+sudo apt install libboost-dev
+# Arch
+sudo pacman -Ss boost
+# macOS
+sudo port install boost # with MacPorts
+brew install boost      # with HomeBrew
+\end{lstlisting}
+
+If you want to build the GUI app as well, you need to install Qt6.
+
+\newpage
+Some options can be configured when calling \texttt{cmake}.
+\begin{itemize}
+  \item \textcolor{forestgreen}{\texttt{CMAKE\_BUILD\_TYPE}}: Build type (default as \texttt{Release})
+  \item \textcolor{forestgreen}{\texttt{CMAKE\_INSTALL\_PREFIX}}: Installation prefix (default as system path)
+  \item \textcolor{forestgreen}{\texttt{MMCESIM\_BUILD\_ASTYLE}}: Build \texttt{astyle} Code Formatter (default as \texttt{ON})
+  \item \textcolor{forestgreen}{\texttt{MMCESIM\_BUILD\_GUI}}: Build mmCEsim GUI App with Qt (default as \texttt{OFF})
+  \item \textcolor{forestgreen}{\texttt{MMCESIM\_APPLE\_COPY\_SH}}: Copy additional shell script for macOS (default as \texttt{OFF}).
+\end{itemize}
+
+For example, you may use \lstinline[morekeywords={cmake}]{cmake . build -D CMAKE_INSTALL_PREFIX=usr/mmcesim}
+to install mmCEsim to the directory \texttt{usr/mmcesim}.
+
+\section{Troubleshooting}
+\subsection{macOS Safety Warning}
+You may view a safety warning after downloading the binary from GitHub Releases.
+The \texttt{trust\_mmcesim.sh} is a script to remove that warning.
+(Give the script proper permission before running in its directory).
+Technically, it does \lstinline[morekeywords={xattr}]{xattr -r -d com.apple.quarantine <binary>}.
