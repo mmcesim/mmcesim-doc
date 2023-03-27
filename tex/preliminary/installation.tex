@@ -15,9 +15,10 @@ Since mmCEsim is built with CMake, so you can easily build the source on Unix-ba
 For Windows, I think there are similar ways.
 
 On a Unix-based system, you can simply use the following code to build and install mmCEsim.
-\begin{lstlisting}[language=sh, morekeywords={git, cmake, make, sudo}, alsoletter={.}]
+\begin{lstlisting}[language=sh, morekeywords={git, mkdir, cmake, make, sudo}, alsoletter={.}]
 git clone https://github.com/mmcesim/mmcesim.git --recurse-submodules
 cd mmcesim
+mkdir build
 cmake . build
 cd build
 make
@@ -44,15 +45,18 @@ brew install boost      # with HomeBrew
 \end{lstlisting}
 
 If you want to build the GUI app as well, you need to install Qt6.
+\newline
 
-\newpage
 Some options can be configured when calling \texttt{cmake}.
 \begin{itemize}
   \item \textcolor{forestgreen}{\texttt{CMAKE\_BUILD\_TYPE}}: Build type (default as \texttt{Release})
   \item \textcolor{forestgreen}{\texttt{CMAKE\_INSTALL\_PREFIX}}: Installation prefix (default as system path)
-  \item \textcolor{forestgreen}{\texttt{MMCESIM\_BUILD\_ASTYLE}}: Build \texttt{astyle} Code Formatter (default as \texttt{ON})
+  \item \textcolor{forestgreen}{\texttt{MMCESIM\_BUILD\_ASTYLE}}: Build \texttt{astyle} code ormatter (default as \texttt{ON})
+  \item \textcolor{forestgreen}{\texttt{MMCESIM\_BUILD\_LOG}}: Build mmCEsim log tool (default as \texttt{ON})
+  \item \textcolor{forestgreen}{\texttt{MMCESIM\_BUILD\_MAINTAIN}}: Build mmCEsim maintenance tool (default as \texttt{ON})
   \item \textcolor{forestgreen}{\texttt{MMCESIM\_BUILD\_GUI}}: Build mmCEsim GUI App with Qt (default as \texttt{OFF})
   \item \textcolor{forestgreen}{\texttt{MMCESIM\_APPLE\_COPY\_SH}}: Copy additional shell script for macOS (default as \texttt{OFF}).
+  \item \textcolor{forestgreen}{\texttt{MMCESIM\_TESTS}}: Run mmCEsim tests (default as \texttt{ON}).
 \end{itemize}
 
 For example, you may use \lstinline[morekeywords={cmake}]{cmake . build -D CMAKE_INSTALL_PREFIX=usr/mmcesim}
