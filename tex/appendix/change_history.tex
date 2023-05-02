@@ -1,4 +1,20 @@
-% \history{HEAD}{\mmCEsimDate}[https://github.com/mmcesim/mmcesim]
+\history{HEAD}{\mmCEsimDate}[https://github.com/mmcesim/mmcesim]
+\subsection*{New Features}
+\begin{itemize}
+  \item ALG library enhancement (\GHhash{49}, \GHhash[pull]{51}):
+  \begin{itemize}
+    \item Add OMPL \cite{zhao2023ompl} algorithm to the library.
+    \item ALG dependency check.
+    \item Enhanced log and \TeX{} report (\GHhash[pull]{55}).
+  \end{itemize}
+  \item Update Doxygen website configurations (including more graphs).
+\end{itemize}
+\subsection*{Bug Fixes}
+\begin{itemize}
+  \item Fix C++ (Armadillo) runtime error when simulating with \texttt{-O2} or \texttt{-O3} on macOS by patching \texttt{arma::randperm} (\GHhash{52}, \GHhash[pull]{54}).
+  \item Rename configuration file name to \texttt{mmcesim.cfg} (\GHhash{50}, \GHhash[pull]{53}).
+\end{itemize}
+
 \history{v0.2.1}{2023/03/31}
 \subsection*{New Features}
 \begin{itemize}
@@ -6,7 +22,7 @@
   \item \texttt{mmcesim-maintain} tool support (\GHhash{25}).
   \item Log system support with cleaner terminal output (\GHhash{32}, \GHhash[pull]{36}).
   \item \texttt{mmcesim-log} tool support (\GHhash{37}, \GHhash[pull]{39}, \GHhash[pull]{47}).
-  \item Support \texttt{NO\_COLOR} standard (\GHhash{42}, \GHhash[pull]{48}).
+  \item Support \texttt{NO\_COLOR}\indextt{NO\_COLOR} standard (\GHhash{42}, \GHhash[pull]{48}).
   \item Syntax highlight for ALG language on \href{https://mmcesim.org}{mmcesim.org} with a custom lexer (\GHhash[issues][mmcesim.org]{1}).
 \end{itemize}
 \subsection*{Bug Fixes}

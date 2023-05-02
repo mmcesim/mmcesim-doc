@@ -48,3 +48,50 @@ we implement this software with
 command line interface (CLI),
 graphic user interface (GUI),
 web application and a VS Code extension.
+The workflow of mmCEsim is depicted in Fig.~\ref{fig:mmCEsim_workflow}.
+
+\begin{figure}[htbp]
+  \centering\sffamily
+  \begin{tikzpicture}[
+    , thick
+    , node distance = 5mm and 8mm
+    , n/.style = {
+      , draw
+      , fill = #1!20
+      , minimum height = 8mm
+      , minimum width = 22mm
+      , align = center
+    }
+    , null n/.style = {
+      , inner sep = 0
+      , outer sep = 0
+    }
+  ]
+    \node (gui) [n = mypurple] {GUI App};
+    \node (config) [below = 8mm of gui, n = myblued, font = \small] {Configuration\\File (YAML)};
+    \node (alg) [below = 4mm of config, n = myblued, font = \small] {Algorithm\\Library (ALG)};
+    \node (export) [right, xshift = 10mm, n = mygreen, font = \large] at ($(config.south east)!.5!(alg.north east)$) {Code\\Exporter};
+    \node (py) [n = myyellow, right = 9mm of export, minimum height = 5mm, minimum width = 25mm, font = \small] {Python (NumPy)};
+    \node (cpp) [n = myyellow, above = 1mm of py, minimum height = 5mm, minimum width = 25mm, font = \small] {C++ (Armadillo)};
+    \node (m) [n = myyellow, below = 1mm of py, minimum height = 5mm, minimum width = 25mm, font = \small] {\textsc{Matlab}/Octave};
+    \node (code) [above = .5mm of cpp] {Exported Code};
+    \node (run) [n = mygreen, right = 9mm of py, font = \large] {Code\\Runner};
+    \node (rpt) [n = mygreen, right = of run, font = \large] {Report\\Generator};
+    \draw [-Latex] (run) -- (rpt);
+    \draw [-Latex, gray] (gui) -- (config);
+    \foreach \x in {config, alg} {
+      \draw (\x.east) -| ([xshift = -5mm]export.west);
+    }
+    \draw [Latex-] (export.west) -- ++ (-5mm, 0);
+    \draw [-Latex] (export.east) -- ++ (8mm, 0);
+    \draw [Latex-] (run.west) -- ++ (-8mm, 0);
+    \node [fit = (code)(m), inner sep = 1mm, draw, dashed, Blue] {};
+    \draw [-Latex, gray, dashed] (gui) -| node [null n] (tmp-1) {} (export);
+    \draw [-Latex, gray, dashed] (tmp-1) -| node [null n] (tmp-2) {} (run);
+    \draw [-Latex, gray, dashed] (tmp-2) -| (rpt);
+    % \begin{scope}[on background layer]
+    % \end{scope}
+  \end{tikzpicture}%
+  \caption{mmCEsim workflow.}
+  \label{fig:mmCEsim_workflow}
+\end{figure}
