@@ -11,7 +11,7 @@ Commands:
   sim [ simulate ]       run simulation
   dbg [ debug ]          debug simulation settings
   exp [ export ]         export code
-  config                 configure mmCEsim options
+  cfg [ config ]         configure mmCEsim options
   (Leave empty)          generic use
 
 Allowed options:
@@ -34,23 +34,61 @@ Configuration:
 
 The allowed commands are explained in the following.
 
-\subsection{exp}\indexCLIcmd{exp}
+\subsection{exp}\indexCLIcmd{exp}\indexCLIcmd{export}
 Command \texttt{exp} exports the \texttt{.sim} configuration and corresponding \texttt{.alg} algorithms
 to a selected language.
 Currently, only export to C++ with Armadillo is supported.
 
-\subsection{sim}\indexCLIcmd{sim}
+\subsection{sim}\indexCLIcmd{sim}\indexCLIcmd{simulate}\label{d:subsec:sim}
 Command sim simulates the exported code with the selected backend. Currently, only C++ with Armadillo is supported.
 
-So far, only C++ compiler \texttt{g++} (default) and \texttt{clang++} are supported which can be configured with option \hyperref[d:subsec:config]{\texttt{config}}.
-You may also need to configure additional C++ flags with \texttt{config cppflags} if by default the compiler cannot find
+So far, only C++ compiler \texttt{g++}\indextt{g++} (default) and \texttt{clang++}\indextt{clang++} are supported which can be configured with option \hyperref[d:subsec:cfg]{\texttt{cfg}} \texttt{cpp}\indextt{cpp}.
+You may also need to configure additional C++ flags with \texttt{cfg cppflags}\indextt{cppflags} if by default the compiler cannot find
 \href{https://arma.sourceforge.net/}{armadillo}
 library.
 
-\subsection{config}\indexCLIcmd{config}\label{d:subsec:config}
+\subsection{dbg}\indexCLIcmd{dbg}\indexCLIcmd{debug}
+Debug the simulation.
+This is different from \hyperref[d:subsec:sim]{\texttt{sim}} in that the generated C++ code is compiled with \texttt{-g3} instead of \texttt{-O3}.
+Therefore, debug information is retained.
+
+
+\subsection{cfg}\indexCLIcmd{cfg}\indexCLIcmd{config}\label{d:subsec:cfg}
 Configure settings.
 
-\section{Configuration}
+\begin{itemize}
+  \item Use \texttt{mmcesim cfg \textit{<name>}} to show the value of \texttt{\textit{<name>}}.
+  \item Use \texttt{mmcesim cfg \textit{<name>} --value=\texttt{<name>}} to set the value of \texttt{\textit{<name>}} as \texttt{\textit{<value>}}.
+\end{itemize}
+
+\begin{example}[Configure C++]~
+  \begin{lstlisting}[language=sh]
+mmcesim cfg cpp --value="clang++"
+mmcesim cfg cppflags --value="-I/opt/local/include -L/opt/local/lib"
+  \end{lstlisting}
+  {\small Source: \url{https://github.com/mmcesim/mmcesim/blob/master/scripts/mac_config_cppflags_tvj.sh}.}
+\end{example}
+
+\section{Configuration}\index{configuration}
+
+\subsection{\texttt{version}}\indextt{version}
+This field takes a string value representing the targeted mmCEsim version.
+For compatibility convenience, this string can be used by the compiler
+to decide the behavior.
+The current default value is the same as the compiler version (\texttt{\mmCEsimVersion}).
+
+\subsection{\texttt{meta}}\indextt{meta}
+This is a map that provides metadata which can be used in the report.
+The used fields now include
+\texttt{title}\indexTtt{meta}{title},
+\texttt{description}\indexTtt{meta}{description},
+\texttt{author}\indexTtt{meta}{author}.
+
+\subsection{\texttt{physics}}\indextt{physics}
+This field is a map that contains physical system settings.
+
+\subsubsection{\texttt{frequency}}\indextt{frequency}.
+
 
 \section{Algorithm}
 
