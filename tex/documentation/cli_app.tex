@@ -52,7 +52,7 @@ You may also need to configure additional C++ flags with \texttt{cfg cppflags}\i
 \href{https://arma.sourceforge.net/}{armadillo}
 library.
 
-\subsubsection{dbg}\indexCLIcmd{dbg}\indexCLIcmd{debug}
+\subsubsection{dbg}\indexCLIcmd{dbg}\indexCLIcmd{debug}\label{d:subsec:dbg}
 Debug the simulation.
 This is different from \hyperref[d:subsec:sim]{\texttt{sim}} in that the generated C++ code is compiled with \texttt{-g3} instead of \texttt{-O3}.
 Therefore, debug information is retained.
@@ -81,28 +81,234 @@ Print the version string of mmCEsim.
 \subsubsection{\texttt{-h} (\texttt{-{}-help})}\indexCLIopt{-h}\indexCLIopt{-{}-help}
 See \S\ref{d:subsec:cli_opt_help_yourself}.
 
+\subsubsection{\texttt{-{}-gui}}\indexCLIopt{-{}-gui}
+Open the GUI application.
+
+\subsubsection{\texttt{-o} (\texttt{-{}-output})}\indexCLIopt{-o}\indexCLIopt{-{}-output}
+Set the output file name.
+No extension name is required, and is added automatically according to your backend settings.
+\texttt{.cpp} for C++, \texttt{.py} for Python, \texttt{.ipynb} for Jupyter,
+and \texttt{.m} for \textsc{Matlab} or GNU Octave.
+
+\subsubsection{\texttt{-s} (\texttt{-{}-style})}\indexCLIopt{-s}\indexCLIopt{-{}-style}
+Set C++ \href{https://astyle.sourceforge.net/astyle.html}{AStyle} (code formatting) options.
+
+\subsubsection{\texttt{-l} (\texttt{-{}-lang})}\indexCLIopt{-s}\indexCLIopt{-{}-lang}
+Set the export language or simulation backend.
+
+\subsubsection{\texttt{-{}-value}}\indexCLIopt{-{}-value}
+The value for configuration options.
+
+\subsubsection{\texttt{-f} (\texttt{-{}-force})}\indexCLIopt{-f}\indexCLIopt{-{}-force}
+Enable the force writing mode.
+This will overwrite existent output files.
+
+\subsubsection{\texttt{-V} (\texttt{-{}-verbose})}\indexCLIopt{-f}\indexCLIopt{-{}-verbose}
+Print additional information.
+
+\subsubsection{\texttt{-{}-no-error-compile}}\indexCLIopt{-{}-no-error-compile}
+Do not raise error if compiling fails.
+This is useful in \hyperref[d:subsec:sim]{\texttt{sim}} and \hyperref[d:subsec:dbg]{\texttt{dbg}}.
+
+\subsubsection{\texttt{-{}-no-term-color}}\indexCLIopt{-{}-no-term-color}
+Disable colorful terminal contents.
+
+\begin{tip}
+  mmCEsim also supports the \href{https://no-color.org}{\texttt{NO\_COLOR}} standard:
+  \textit{Command-line software which adds ANSI color to its output by default
+    should check for a \texttt{NO\_COLOR} environment variable that,
+    when present and not an empty string (regardless of its value),
+    prevents the addition of ANSI color.}
+\end{tip}
+
+When you have a non-empty \texttt{NO\_COLOR} environmental variable,
+the color output is disabled,
+and you no longer need the \texttt{-{}-no-term-color} option.
+
 \section{Configuration}\index{configuration}
 
-\subsection{\texttt{version}}\indextt{version}
+Configuration is written in a text file with extension \texttt{.sim} (actually, can be any file extension)
+in YAML\index{YAML} syntax.
+\textcolor{Red}{\textsf{[Required]}} keys need to be filled in, unless provided with a
+\textcolor{forestgreen}{\textsf{Default}} value.
+\textcolor{Orange}{\textsf{[Optional]}} keys can be specified.
+\textcolor{Purple}{\textsf{[Conditional]}} keys can be either required or optional,
+depending on other settings.
+
+\ExplSyntaxOn
+
+% #2: name
+% #3: required (1) or optional (0, default)
+% #4: default value (only when required)
+\NewDocumentCommand { \CLIConfigLevelI } { o m O{0} o }
+  {
+    \subsection[#2]
+      {
+        \texttt{#2}
+        \IndexDotfill
+        \tl_if_eq:nnTF { #3 } { 1 }
+          {
+            \IfNoValueTF{#4}{}{\textcolor{forestgreen}{Default:~}\textcolor{black}{\texttt{#4}}\quad}
+            \textcolor{Red}{[Required]}
+          }
+          {
+            \tl_if_eq:nnTF { #4 } { 2 }
+            {
+              \IfNoValueTF{#4}{}{\textcolor{forestgreen}{Default:~}\textcolor{black}{\texttt{#4}}\quad}
+              \textcolor{Purple}{[Conditional]}
+            }
+            {
+              \textcolor{Orange}{[Optional]}
+            }
+          }
+      }
+    \indextt{#2}
+    \IfNoValueTF{#1}
+      {
+        \label{d:subsec:sim_config_#2}
+      }
+      {
+        \label{d:subsec:sim_config_#1}
+      }
+  }
+
+% #3: Level I
+% #4: name
+% #5: required (1) or optional (0, default)
+% #6: default value (only when required)
+\NewDocumentCommand { \CLIConfigLevelII } { o o m m O{0} o }
+  {
+    \subsubsection[#4]
+      {
+        \texttt{#4}
+        \IndexDotfill
+        \tl_if_eq:nnTF { #5 } { 1 }
+          {
+            \IfNoValueTF{#6}{}{\textcolor{forestgreen}{Default:~}\textcolor{black}{\texttt{#6}}\quad}
+            \textcolor{Red}{[Required]}
+          }
+          {
+            \tl_if_eq:nnTF { #5 } { 2 }
+            {
+              \IfNoValueTF{#6}{}{\textcolor{forestgreen}{Default:~}\textcolor{black}{\texttt{#6}}\quad}
+              \textcolor{Purple}{[Conditional]}
+            }
+            {
+              \textcolor{Orange}{[Optional]}
+            }
+          }
+      }
+    \indexTtt{#3}{#4}
+    \IfNoValueTF{#1}
+      {
+        \label{d:subsubsec:sim_config_#3_#4}
+      }
+      {
+        \label{d:subsubsec:sim_config_#1_#2}
+      }
+  }
+\newcommand{\CLIConfigEmpty}{\textnormal{\textit{<empty>}}}
+\ExplSyntaxOff
+
+\CLIConfigLevelI{version}[1][\mmCEsimVersion]
 This field takes a string value representing the targeted mmCEsim version.
 For compatibility convenience, this string can be used by the compiler
 to decide the behavior.
 The current default value is the same as the compiler version (\texttt{\mmCEsimVersion}).
 
-\subsection{\texttt{meta}}\indextt{meta}
+\CLIConfigLevelI{meta}
 This is a map that provides metadata which can be used in the report.
 The used fields now include
 \texttt{title}\indexTtt{meta}{title},
 \texttt{description}\indexTtt{meta}{description},
 \texttt{author}\indexTtt{meta}{author}.
 
-\subsection{\texttt{physics}}\indextt{physics}
+\CLIConfigLevelI{physics}
 This field is a map that contains physical system settings.
 
-\subsubsection{\texttt{frequency}}\indextt{frequency}.
+\CLIConfigLevelII{physics}{frequency}[1][narrow]
+The frequency bandwidth is specified in this field,
+which can have value \texttt{narrow} for narrowband\index{narrowband} (default)
+or \texttt{wide} for wideband\index{wideband}.
 
+\CLIConfigLevelII[physics][off_grid]{physics}{off\_grid}[1][true]
+This is actually about the model.
+With the geometric channel model with grid,
+there can be off-grid (or power leakage) problems.
+Recently, there are also super resolution formulations to solve the problem.
+But we still adopt the grid representation for its popularity and simplicity.
+By setting \texttt{off\_grid} to false,
+the off grid effect is discarded, i.e.\@ all angles fall on the grid.
+The default value is \texttt{true}.
+
+\CLIConfigLevelII{physics}{carriers}[2]
+For a wideband system,
+you may specify the number of carriers used in OFDM\index{OFDM}.
+Its corresponding
+macro % TODO
+in
+\texttt{CALC} % TODO
+is \ALG{`CARRIERS_NUM`}.
+
+\CLIConfigLevelI{nodes}[1]
+A sequence (array) of nodes in the channel network.
+Transmitter (Tx), Receiver (Rx), Reconfigurable Intelligent Surface (RIS)
+are all considered node (channels are the connecting edges to these nodes).
+For each of its elements, you need to specify the following fields.
+
+\CLIConfigLevelII{nodes}{id}[1]
+The \texttt{id} is used in \hyperref[d:subsec:sim_config_channels]{\texttt{channels}} so that we know the direction of channel.
+
+\CLIConfigLevelII{nodes}{role}[1][RIS]
+
+\CLIConfigLevelII{nodes}{num}[1][1]
+
+\CLIConfigLevelII{nodes}{size}[1]
+
+\CLIConfigLevelII{nodes}{beam}[1]
+
+\CLIConfigLevelII{nodes}{grid}[1][same]
+
+\CLIConfigLevelII{nodes}{beamforming}[1]
+
+\CLIConfigLevelI{macro}
+
+\CLIConfigLevelI{channels}[1]
+
+\CLIConfigLevelII{channels}{id}[1]
+
+\CLIConfigLevelII{channels}{from}[1]
+
+\CLIConfigLevelII{channels}{to}[1]
+
+\CLIConfigLevelII{channels}{sparsity}[1]
+
+\CLIConfigLevelII{channels}{gains}[1][normal]
+
+\CLIConfigLevelI{sounding}[1]
+
+\CLIConfigLevelII{sounding}{variable}[1]
+
+\CLIConfigLevelI{preamble}
+
+\CLIConfigLevelI{estimation}[1][auto]
+
+\CLIConfigLevelI{conclusion}
+
+\CLIConfigLevelI{appendix}
+
+\CLIConfigLevelI{simulation}[1]
+
+\CLIConfigLevelII{simulation}{backend}[1][cpp]
+
+\CLIConfigLevelII{simulation}{jobs}[1]
+
+\CLIConfigLevelII{simulation}{report}
 
 \section{Algorithm}
+
+Algorithm are defined in ALG language,
+please refer to \S\ref{d:chap:alg_lang} for details.
 
 \section{Tools}
 
