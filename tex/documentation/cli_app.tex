@@ -1,4 +1,7 @@
-\section{CLI Options}\index{CLI command}
+\section{CLI Options}\index{CLI options}
+
+\subsection{Help Yourself}\label{d:subsec:cli_opt_help_yourself}
+
 With \texttt{mmcesim -h}, you can view all supported commands and options.
 \begin{lstlisting}
 mmCEsim 0.2.1  (C) 2022-2023 Wuqiong Zhao
@@ -32,14 +35,16 @@ Configuration:
   --no-term-color        disable colorful terminal contents
 \end{lstlisting}
 
+\subsection{Command}\index{CLI command}
+
 The allowed commands are explained in the following.
 
-\subsection{exp}\indexCLIcmd{exp}\indexCLIcmd{export}
+\subsubsection{exp}\indexCLIcmd{exp}\indexCLIcmd{export}
 Command \texttt{exp} exports the \texttt{.sim} configuration and corresponding \texttt{.alg} algorithms
 to a selected language.
 Currently, only export to C++ with Armadillo is supported.
 
-\subsection{sim}\indexCLIcmd{sim}\indexCLIcmd{simulate}\label{d:subsec:sim}
+\subsubsection{sim}\indexCLIcmd{sim}\indexCLIcmd{simulate}\label{d:subsec:sim}
 Command sim simulates the exported code with the selected backend. Currently, only C++ with Armadillo is supported.
 
 So far, only C++ compiler \texttt{g++}\indextt{g++} (default) and \texttt{clang++}\indextt{clang++} are supported which can be configured with option \hyperref[d:subsec:cfg]{\texttt{cfg}} \texttt{cpp}\indextt{cpp}.
@@ -47,13 +52,12 @@ You may also need to configure additional C++ flags with \texttt{cfg cppflags}\i
 \href{https://arma.sourceforge.net/}{armadillo}
 library.
 
-\subsection{dbg}\indexCLIcmd{dbg}\indexCLIcmd{debug}
+\subsubsection{dbg}\indexCLIcmd{dbg}\indexCLIcmd{debug}
 Debug the simulation.
 This is different from \hyperref[d:subsec:sim]{\texttt{sim}} in that the generated C++ code is compiled with \texttt{-g3} instead of \texttt{-O3}.
 Therefore, debug information is retained.
 
-
-\subsection{cfg}\indexCLIcmd{cfg}\indexCLIcmd{config}\label{d:subsec:cfg}
+\subsubsection{cfg}\indexCLIcmd{cfg}\indexCLIcmd{config}\label{d:subsec:cfg}
 Configure settings.
 
 \begin{itemize}
@@ -68,6 +72,14 @@ mmcesim cfg cppflags --value="-I/opt/local/include -L/opt/local/lib"
   \end{lstlisting}
   {\small Source: \url{https://github.com/mmcesim/mmcesim/blob/master/scripts/mac_config_cppflags_tvj.sh}.}
 \end{example}
+
+\subsection{Options}\index{CLI option}
+
+\subsubsection{\texttt{-v} (\texttt{-{}-version})}\indexCLIopt{-v}\indexCLIopt{-{}-version}
+Print the version string of mmCEsim.
+
+\subsubsection{\texttt{-h} (\texttt{-{}-help})}\indexCLIopt{-h}\indexCLIopt{-{}-help}
+See \S\ref{d:subsec:cli_opt_help_yourself}.
 
 \section{Configuration}\index{configuration}
 
@@ -93,3 +105,9 @@ This field is a map that contains physical system settings.
 \section{Algorithm}
 
 \section{Tools}
+
+\subsection{Compose}\index{compose}\indextt{mmcesim-compose}
+
+\subsection{Log}\index{log}\indextt{mmcesim-log}
+
+\subsection{Maintain}\index{maintain}\indextt{mmcesim-maintain}
