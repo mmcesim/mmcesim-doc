@@ -1,0 +1,6 @@
+#!/bin/sh
+
+musixtex ring_finale.mtx
+pdfcrop ring_finale.pdf ring_finale.pdf
+rm ring_finale.tex
+rm ring_finale.pmx
