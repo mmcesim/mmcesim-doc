@@ -180,7 +180,7 @@ depending on other settings.
   {
     \subsubsection[#4]
       {
-        \texttt{#4}
+        \textcolor{gray}{\texttt{#3}\,/\,}\textcolor{black}{\texttt{#4}}
         \IndexDotfill
         \tl_if_eq:nnTF { #5 } { 1 }
           {
@@ -206,6 +206,41 @@ depending on other settings.
       {
         \label{d:subsubsec:sim_config_#1_#2}
       }
+  }
+
+\NewDocumentCommand { \CLIConfigLevelIII } { o o o m m m O{0} o }
+  {
+    \vspace*{-.8\baselineskip}
+    \paragraph[#6]
+      {
+        \textcolor{gray}{$\blacktriangleright$\quad\texttt{#4}\,/\,\texttt{#5}\,/\,}\textcolor{black}{\texttt{#6}}
+        \IndexDotfill
+        \tl_if_eq:nnTF { #7 } { 1 }
+          {
+            \IfNoValueTF{#8}{}{\textcolor{forestgreen}{Default:~}\textcolor{black}{\texttt{#8}}\quad}
+            \textcolor{Red}{[Required]}
+          }
+          {
+            \tl_if_eq:nnTF { #7 } { 2 }
+            {
+              \IfNoValueTF{#8}{}{\textcolor{forestgreen}{Default:~}\textcolor{black}{\texttt{#8}}\quad}
+              \textcolor{Purple}{[Conditional]}
+            }
+            {
+              \textcolor{Orange}{[Optional]}
+            }
+          }
+      }
+    \indexTTtt{#4}{#5}{#6}
+    \IfNoValueTF{#1}
+      {
+        \label{d:par:sim_config_#4_#5_#6}
+      }
+      {
+        \label{d:par:sim_config_#1_#2_#3}
+      }
+    \mbox{\hspace*{-1em}}
+    \par
   }
 \newcommand{\CLIConfigEmpty}{\textnormal{\textit{<empty>}}}
 \ExplSyntaxOff
@@ -270,6 +305,20 @@ The \texttt{id} is used in \hyperref[d:subsec:sim_config_channels]{\texttt{chann
 \CLIConfigLevelII{nodes}{grid}[1][same]
 
 \CLIConfigLevelII{nodes}{beamforming}[1]
+For a \hyperref[d:subsec:sim_config_nodes]{node} with \hyperref[d:subsubsec:sim_config_nodes_role]{role}
+\texttt{transmitter} (Tx) or \texttt{receiver} (Rx), it is the active beamforming as precoding and combing, respectively.
+For a \texttt{RIS} node, it is the \textbf{passive} reflection tensor.
+% TODO: The dimension and data type is shown in Table~
+
+\CLIConfigLevelIII{nodes}{beamforming}{variable}[1]
+For Tx or Rx, this sets the variable name of the beamforming matrix (for narrowband) or tensor (for wideband).
+For RIS, this is the variable name of the reflection tensor.
+
+\CLIConfigLevelIII{nodes}{beamforming}{scheme}[1][random]
+Possible value is \texttt{random} (default) and \texttt{custom}.
+
+\CLIConfigLevelIII{nodes}{beamforming}{formula}[2]
+Custom beamforming formula.
 
 \CLIConfigLevelI{macro}
 
@@ -287,21 +336,58 @@ The \texttt{id} is used in \hyperref[d:subsec:sim_config_channels]{\texttt{chann
 
 \CLIConfigLevelI{sounding}[1]
 
-\CLIConfigLevelII{sounding}{variable}[1]
+\CLIConfigLevelII{sounding}{variables}[1]
+Channel variable names are defined here, including
+\begin{itemize}
+  \item \texttt{received}\indexTTtt{sounding}{variables}{received}: received signal
+  \item \texttt{noise}\indexTTtt{sounding}{variables}{noise}: received noise
+  \item \texttt{channel}\indexTTtt{sounding}{variables}{channel}: cascaded channel
+\end{itemize}
 
 \CLIConfigLevelI{preamble}
+This is the code part before main simulation
+(including sounding, estimation and report generation).
+\begin{tip}
+  Custom functions can be defined here.
+\end{tip}
+This part is specified using the \hyperref[d:chap:alg_lang]{ALG language}.
 
 \CLIConfigLevelI{estimation}[1][auto]
+This part is specified using the \hyperref[d:chap:alg_lang]{ALG language}.
 
 \CLIConfigLevelI{conclusion}
+This part is specified using the \hyperref[d:chap:alg_lang]{ALG language}.
 
 \CLIConfigLevelI{appendix}
+This is the code part after all jobs are done.
+
+This part is specified using the \hyperref[d:chap:alg_lang]{ALG language}.
 
 \CLIConfigLevelI{simulation}[1]
 
 \CLIConfigLevelII{simulation}{backend}[1][cpp]
 
 \CLIConfigLevelII{simulation}{jobs}[1]
+
+Simulation jobs.
+Each job is independent of one another.
+
+\CLIConfigLevelIII{simulation}{jobs}{name}[1]
+Simulation job name which is used in the generated report.
+
+\CLIConfigLevelIII[simulation][jobs][test_num]{simulation}{jobs}{test\_num}[1][50]
+Number of Monte-Carlo\index{Monte-Carlo} simulations.
+
+\CLIConfigLevelIII{simulation}{jobs}{SNR}[1]
+Signal-to-noise ratio\index{signal-to-noise ratio} (SNR\index{SNR}).
+
+\CLIConfigLevelIII[simulation][jobs][SNR_mode]{simulation}{jobs}{SNR\_mode}[1][dB]
+The mode of SNR. Possible values are \texttt{dB} (default) and \texttt{linear}.
+
+\CLIConfigLevelIII{simulation}{jobs}{pilot}[1]
+The number of pilot overheads.
+
+\CLIConfigLevelIII{simulation}{jobs}{algorithms}[1]
 
 \CLIConfigLevelII{simulation}{report}
 
