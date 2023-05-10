@@ -93,7 +93,7 @@ and \texttt{.m} for \textsc{Matlab} or GNU Octave.
 \subsubsection{\texttt{-s} (\texttt{-{}-style})}\indexCLIopt{-s}\indexCLIopt{-{}-style}
 Set C++ \href{https://astyle.sourceforge.net/astyle.html}{AStyle} (code formatting) options.
 
-\subsubsection{\texttt{-l} (\texttt{-{}-lang})}\indexCLIopt{-s}\indexCLIopt{-{}-lang}
+\subsubsection{\texttt{-l} (\texttt{-{}-lang})}\indexCLIopt{-l}\indexCLIopt{-{}-lang}
 Set the export language or simulation backend.
 
 \subsubsection{\texttt{-{}-value}}\indexCLIopt{-{}-value}
@@ -400,6 +400,66 @@ please refer to \S\ref{d:chap:alg_lang} for details.
 
 \subsection{Compose}\index{compose}\indextt{mmcesim-compose}
 
+Compose \texttt{.sim} configuration file from command line options.
+\begin{tip}[Note]
+  This is still under development
+\end{tip}
+
 \subsection{Log}\index{log}\indextt{mmcesim-log}
+View or copy mmCEsim log file with \texttt{mmcesim-log}\indextt{mmcesim-log}.
+
+\subsubsection{Log File}
+The log file is at \texttt{\textit{<install\_prefix>}/bin/mmcesim.log}.
+It stores information about the configuration and many internal processing details.
+This is especially useful for diagnosis.
+
+Here is an example of the header part of a log file:
+\begin{lstlisting}
+[INFO] * Time     : 2023-05-06 10:40:17 (UTC +0800)
+[INFO] * Version  : 0.2.1
+[INFO] * System   : MacOs-ARM
+[INFO] * Compiler : clang v13.0.0
+[INFO] * CLI Args : mmcesim "-h"
+\end{lstlisting}
+
+\subsubsection{Usage}
+The available command line options are listed as follows:
+\begin{itemize}
+  \item
+    \texttt{-v}\indexTtt{mmcesim-log}{-v}
+    (\texttt{-{}-version}\indexTtt{mmcesim-log}{-{}-version}):
+    produce help message;
+  \item
+    \texttt{-h}\indexTtt{mmcesim-log}{-h}
+    (\texttt{-{}-help}\indexTtt{mmcesim-log}{-{}-help}):
+    print version string;
+  \item
+    \texttt{-p}\indexTtt{mmcesim-log}{-p}
+    (\texttt{-{}-print}\indexTtt{mmcesim-log}{-{}-print}):
+    print mmCEsim log on terminal;
+  \item
+    \texttt{-c}\indexTtt{mmcesim-log}{-c}
+    (\texttt{-{}-copy}\indexTtt{mmcesim-log}{-{}-copy}):
+    copy mmCEsim log to clipboard;
+  \item
+    \texttt{-f}\indexTtt{mmcesim-log}{-f}
+    (\texttt{-{}-file}\indexTtt{mmcesim-log}{-{}-file}):
+    show mmCEsim log file location.
+\end{itemize}
+
+If no option is provided, it will use the \texttt{-p} option to print the log.
+You can use several options together, such as \texttt{-cp} to print and copy.
+
+\begin{tip}
+  Use can use \texttt{grep} to filter the log, for example use
+  \begin{lstlisting}[language=sh]
+mmcesim-log | grep "\[ERROR\]"
+  \end{lstlisting}
+  to get all error messages.
+\end{tip}
 
 \subsection{Maintain}\index{maintain}\indextt{mmcesim-maintain}
+You can view the latest stable version available with
+\texttt{mmcesim-maintain~-l}\indexTtt{mmcesim-maintain}{-l}.
+This internally invokes \texttt{curl https://mmcesim.org/VERSION},
+so you need to have \texttt{curl} installed.
