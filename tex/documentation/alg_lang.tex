@@ -329,6 +329,13 @@ std::cout << "Standard C++ Language!" << std::endl;
   For Python, \textsc{Matlab}/Octave, nothing will happen with the \func{CPP} function.
 \end{example}
 
+\funcsec{ELIF}
+\func{ELIF} is a shorthand for combining \lfunc{ELSE} and \lfunc{IF} statements into a continuous sequence.
+\subsubsection*{Explanations}
+The parameter is the same as \lfunc{IF}.
+\subsubsection*{Example}
+Example with \lfunc{IF}.
+
 \funcsec{ELSE}
 Used in \lfunc{IF} blocks.
 \subsubsection*{Explanations}
@@ -338,7 +345,7 @@ There is no parameter for the \func{ELSE} function.
 Example with \lfunc{IF}.
 
 \funcsec{END}
-End of a block for \lfunc{ELSE}, \func{ELIF}, \func{FUNC}, \func{FOREVER}, \lfunc{IF}, \func{LOOP}, \func{WHILE}.
+End of a block for \lfunc{ELSE}, \lfunc{ELIF}, \func{FUNCTION}, \func{FOREVER}, \lfunc{IF}, \func{LOOP}, \func{WHILE}.
 \subsubsection*{Explanations}
 In C++, this functions as \texttt{\}},
 in Python it is the indentation goes back for one block.
@@ -347,8 +354,63 @@ In \textsc{Matlab}/Octave, it is the \texttt{end} specification.
 Example with \func{FOR}, \func{FOREVER}, \lfunc{IF}, \func{LOOP}, \func{WHILE}.
 
 \funcsec{ESTIMATE}
-\lfunc{CALL} \hyperref[d:sec:alg_lib]{standard ALG functions} to estimate the
+\lfunc{CALL} \hyperref[d:sec:alg_lib]{standard ALG functions}
+or your custom algorithms to estimate the
 sparse channel with compressed sensing (CS).
+
+\funcsec{FOR}
+Start a \texttt{for} loop.
+\subsubsection*{Explanations}
+The parameters are similar to C++, as listed in Table~\ref{d:tab:for_params}.
+\begin{table}[htbp]
+  \caption{ALG \texttt{FOR} function parameters.}
+  \label{d:tab:for_params}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{ccX}
+    \toprule
+    \tbhead{Position} & \tbhead{Parameter Key} & \tbhead{Descriptions} \\
+    \midrule
+    1 & \texttt{init}\indexTtt{FOR}{init} & Initialization before entering the loop. \\
+    2 & \texttt{cond}\indexTtt{FOR}{cond} & Condition to continue into the loop. \\
+    3 & \texttt{oper}\indexTtt{FOR}{oper} & Operation after each iteration. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+\begin{warning}
+  If there is \texttt{=} or other special characters inside your parameter or there exists space,
+  do remember to place them inside double quotes (\texttt{"}).
+\end{warning}
+\subsubsection*{Example}
+\begin{example}[Example of FOR]~
+  \begin{lstlisting}[language=mmcesim-sim]
+FOR "i::u0 = INIT 0" "i != 10" "i=i+2" # a for loop taking three parameters
+  COMMENT "Do something here in the for loop."
+END
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++]
+for (uword i = 0; i != 10; i = i + 2) {
+    // Do something here in the for loop.
+}
+  \end{lstlisting}
+\end{example}
+
+\funcsec{FOREVER}
+Repeat in the block until \lfunc{BREAK}.
+\subsubsection*{Example}
+\begin{example}[Example of FOREVER]~
+  \begin{lstlisting}[language=mmcesim-sim]
+FOREVER # takes no param
+  BREAK # Wow, nothing is done when I just break here [Lol]
+END
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++]
+while (1) {
+    break;
+}
+  \end{lstlisting}
+\end{example}
 
 \funcsec{FUNCTION}
 Start a function definition.
@@ -357,6 +419,67 @@ The function requires an \lfunc{END} to mark the end of the function.
 
 \funcsec{IF}
 Conditional statement.
+\subsubsection*{Explanations}
+This works the same as \texttt{if} in C++, Python, \textsc{Matlab}/Octave.
+All contents after the \func{IF} keyword are part of the condition.
+If you insist using the key value style, the key is \texttt{cond}.
+\subsubsection*{Example}
+\begin{example}[Example of IF]~
+  \begin{lstlisting}[language=mmcesim-sim]
+IF \accu(\pow(\abs(A), 2)) > 0.1 * threshold
+  IF b < 0
+    b = 0
+  ELIF b > 100
+    b = 100
+  ELSE
+    b = -b
+  END
+ELSE
+  IF cond="c == d" # use key value style if you insist
+    A = A * 0.1
+  END
+END
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++]
+if (arma::accu(arma::pow(arma::abs(A), 2)) > 0.1 * threshold) {
+    if (b < 0) {
+        b = 0;
+    } else if (b > 100) {
+        b = 100;
+    } else {
+        b = -b;
+    }
+} else {
+    if (c == d) {
+        A = A * 0.1;
+    }
+}
+  \end{lstlisting}
+\end{example}
+
+\funcsec{INIT}
+Initialize a variable.
+\subsubsection*{Explanations}
+This function can initialize a \textbf{scalar}, a \textbf{vector}, a \textbf{matrix} and a \textbf{tensor}.
+The initialization target can be specified in two ways:
+\begin{itemize}
+  \item \textbf{return value type specification}: You can specify the type of the variable to be
+  initialized by \texttt{::};
+  \item \textbf{parameters}: Parameter \texttt{dtype}\indexTtt{INIT}{dtype} is used for element type,
+  and \texttt{dim1}\indexTtt{INIT}{dim1}, \texttt{dim2}\indexTtt{INIT}{dim2}, \texttt{dim3}\indexTtt{INIT}{dim3} are used for dimension specification.
+\end{itemize}
+\begin{warning}
+  Please be \textbf{consistent}!
+  The current implementation of the function is fragile and can be fooled by
+  any inconsistent actions. While we are trying to enhance the error detection,
+  you are advised to use the correct dimension.
+
+  However, there are also a few exceptions for user's convenience.
+  Though row vector (\texttt{r}) is regarded as a matrix,
+  you can still specify its dimension with only one parameter on \texttt{dim1}.
+  For a scalar initialization, the value can directly follow \texttt{=}.
+\end{warning}
 
 \section{Calculation (CALC)}\index{calculation}\index{CALC}\label{d:sec:calc}
 
