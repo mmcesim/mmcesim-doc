@@ -535,7 +535,7 @@ std::complex<double> random_number = (-2) * arma::randn<std::complex<double>>();
 \funcsec{LOG}
 Write to log file.
 \subsubsection*{Example}
-\begin{example}[Example of INIT]~
+\begin{example}[Example of LOG]~
   \begin{lstlisting}[language=mmcesim-sim]
 LOG [INFO] A user-defined message.
   \end{lstlisting}
@@ -554,6 +554,145 @@ LOG [INFO] A user-defined message.
 
 \funcsec{LOOP}
 Loop with iteration counter.
+\subsubsection*{Explanations}
+This function uses an iteration counter to control the loop.
+The parameters are shown in Table~\ref{d:tab:loop_params}.
+\begin{table}[htbp]
+  \caption{ALG \texttt{LOOP} function parameters.}
+  \label{d:tab:loop_params}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{ccX}
+    \toprule
+    \tbhead{Position} & \tbhead{Parameter Key} & \tbhead{Descriptions} \\
+    \midrule
+    1 & \ALGkey{begin}\indexTtt{LOOP}{begin} & The starting iteration counter. \\
+    2 & \ALGkey{end}\indexTtt{LOOP}{end} & The end iteration counter (not included). \\
+    3 & \ALGkey{step}\indexTtt{LOOP}{step} & Iteration counter step. \\
+    4 & \ALGkey{from}\indexTtt{LOOP}{from} & The starting iteration counter. \\
+    5 & \ALGkey{to}\indexTtt{LOOP}{to} & The last interaction counter (included if step walks into it). \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+\begin{tip}
+  Normally, we use the \ALGkey{begin} + \ALGkey{end} format.
+  You may also use \ALGkey{from} + \ALGkey{to} format,
+  but the two formats cannot be used together.
+\end{tip}
+The return value is the iteration counter.
+If it is not specified, the default one is \texttt{i}.
+You may also use \texttt{::} to specify the iteration counter type.
+\subsubsection*{Example}
+\begin{example}[Example of LOOP]~
+  \begin{lstlisting}[language=mmcesim-sim]
+LOOP 0 10 # implicit counter name as 'i'
+  COMMENT 0, 1, 2, ..., 9
+  j = LOOP from=10 to=0 step=-1
+    COMMENT 10, 9, 8, ..., 0
+  END
+  k::u0 = LOOP begin=0 end=10 step=2 # specify counter type
+    COMMENT 0, 2, 4, 6, 8
+  END
+END
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++]
+for (auto i = 0; i < 10; ++i) {
+    // 0, 1, 2, ..., 9
+    for (auto j = 10; j >= 0; --j) {
+        // 10, 9, 8, ..., 0
+    }
+    for (uword k = 0; k < 10; k += 2) {
+        // 0, 2, 4, 6, 8
+    }
+}
+  \end{lstlisting}
+\end{example}
+
+\funcsec{PRINT}
+Print the contents.
+\subsubsection*{Explanations}
+The function takes a list of parameters,
+and they can be matrices or scalar values.
+They are printed out from left to right.
+\subsubsection*{Example}
+\begin{example}[Example of PRINT]~
+  \begin{lstlisting}[language=mmcesim-sim]
+PRINT 1 '\t' H '\n'
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++]
+std::cout << 1 << '\t' << H << '\n';
+  \end{lstlisting}
+\end{example}
+
+\funcsec{RECOVER}
+Declare the recovered channel.
+\subsubsection*{Explanations}
+The normalized mean square error\index{normalized mean square error} (NMSE\index{NMSE})
+or bit error rate\index{bit error rate} (BER\index{BER}) performance
+is evaluated with the recovered channel specified here
+(the only parameter that needs to be set).
+\subsubsection*{Example}
+\href{https://github.com/mmcesim/examples/blob/6500ae3021e06b583897f9554e694e86584064f0/MIMO_OFDM_OMP/MIMO_wideband.sim#L110}{Example of MIMO OFDM},
+where \texttt{H\_hat} is the recovered channel.
+
+\funcsec{MERGE}
+Declare end the scope of job algorithms.
+\subsubsection*{Explanations}
+This works with \lfunc{BRANCH}.
+View documentation of \lfunc{BRANCH} for details.\par
+If you do not specify \func{MERGE},
+it is assumed to be end of \hyperref[d:subsec:sim_config_estimation]{\texttt{estimation}}
+by default.
+\begin{tip}
+  It is advised to always specify \func{MERGE} so that the range
+  between \lfunc{BRANCH} and \func{MERGE} is clearer
+  and can be extended by other users more easily.
+\end{tip}
+\subsubsection*{Example}
+\href{https://github.com/mmcesim/examples/blob/6500ae3021e06b583897f9554e694e86584064f0/MIMO_OFDM_OMP/MIMO_wideband.sim#L111}{Example of OFDM OMP}.
+
+\funcsec{NEW}
+Create a new variable from \lfunc{CALC} result.
+\subsubsection*{Explanations}
+The parameters are the same as \lfunc{CALC},
+except from the value type is \textbf{required}.
+\subsubsection*{Example}
+\begin{example}[Example of NEW]~
+  \begin{lstlisting}[language=mmcesim-sim]
+y::v = NEW H @ x + n
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++]
+cx_vec y = H * x + n;
+  \end{lstlisting}
+\end{example}
+
+\funcsec{WHILE}
+Repeat while the condition satisfies.
+\subsubsection*{Explanations}
+This is the same as C++, Python and Matlab/Octave.
+The function takes only one parameter.
+(If you do need a key value style, it has key \ALGkey{cond}.)
+\begin{tip}
+  Since only one parameter is needed,
+  all contents after the \func{WHILE} keyword is viewed as the stop condition.
+  So there is no need to quote the condition which is required in \lfunc{FOR}.
+\end{tip}
+\subsubsection*{Example}
+\begin{example}[Example of WHILE]~
+  \begin{lstlisting}[language=mmcesim-sim]
+WHILE i != 100 && result == false # no quote is needed because there will be only one param
+  COMMENT "Do something in the while loop."
+END
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++]
+while (i != 100 && result == false) {
+    // Do something in the while loop.
+}
+  \end{lstlisting}
+\end{example}
 
 \section{Calculation (CALC)}\index{calculation}\index{CALC}\label{d:sec:calc}
 
