@@ -695,6 +695,28 @@ while (i != 100 && result == false) {
 \end{example}
 
 \section{Calculation (CALC)}\index{calculation}\index{CALC}\label{d:sec:calc}
+\subsection{Design Inspirations}
+Let's have a look at the example below.
+\begin{lstlisting}[language=mmcesim-sim]
+\sqrt(\accu(\pow(\abs(A_{1,:,2:5} - B^{-1}), 2))) * c * A @ (D ./ E^T) + \sin(f_{2})
+\end{lstlisting}
+Well, that looks like \LaTeX{}, right?
+The familiar \texttt{\textbackslash} character starting a command
+(sorry, that's called macro in \LaTeX{}),
+and inverse as \verb|^{-1}|, transpose \verb|^T|, and subscript with \verb|_{}|!
+
+Well, let's write the above example in LaTeX (through some informal \textsc{Matlab} style subscript)
+\begin{example}[Maths Representation and \LaTeX{} Code]
+  \begin{equation}
+    \left\|\mathbf{A}_{1,:,2:5}-\mathbf{B}^{-1}\right\|_2\cdot c\mathbf{A}\cdot\left(\mathbf{D}\oslash\mathbf{E}^\mathsf{T}+\mathrm{ones}(\sin(\mathbf{f}_2))\right),
+  \end{equation}
+  where $\mathbf{A},\mathbf{B},\mathbf{D},\mathbf{E}$ are matrices,
+  $c$ is a scalar, $\mathbf{f}$ is a vector, $\oslash$ represents the element-wise division,
+  and $\mathrm{ones}$ represent a matrix with all elements as $1$.
+  \begin{lstlisting}[language=tex]
+\left\|\mathbf{A}_{1,:,2:5}-\mathbf{B}^{-1}\right\|_2\cdot c\mathbf{A}\cdot\left(\mathbf{D}\oslash\mathbf{E}^\mathsf{T}+\mathrm{ones}(\sin(\mathbf{f}_2))\right)
+  \end{lstlisting}
+\end{example}
 
 \section{Macro}\index{macro}
 
