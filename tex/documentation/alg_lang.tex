@@ -370,9 +370,9 @@ The parameters are similar to C++, as listed in Table~\ref{d:tab:for_params}.
     \toprule
     \tbhead{Position} & \tbhead{Parameter Key} & \tbhead{Descriptions} \\
     \midrule
-    1 & \texttt{init}\indexTtt{FOR}{init} & Initialization before entering the loop. \\
-    2 & \texttt{cond}\indexTtt{FOR}{cond} & Condition to continue into the loop. \\
-    3 & \texttt{oper}\indexTtt{FOR}{oper} & Operation after each iteration. \\
+    1 & \ALGkey{init}\indexTtt{FOR}{init} & Initialization before entering the loop. \\
+    2 & \ALGkey{cond}\indexTtt{FOR}{cond} & Condition to continue into the loop. \\
+    3 & \ALGkey{oper}\indexTtt{FOR}{oper} & Operation after each iteration. \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -422,7 +422,7 @@ Conditional statement.
 \subsubsection*{Explanations}
 This works the same as \texttt{if} in C++, Python, \textsc{Matlab}/Octave.
 All contents after the \func{IF} keyword are part of the condition.
-If you insist using the key value style, the key is \texttt{cond}.
+If you insist using the key value style, the key is \ALGkey{cond}.
 \subsubsection*{Example}
 \begin{example}[Example of IF]~
   \begin{lstlisting}[language=mmcesim-sim]
@@ -466,8 +466,8 @@ The initialization target can be specified in two ways:
 \begin{itemize}
   \item \textbf{return value type specification}: You can specify the type of the variable to be
   initialized by \texttt{::};
-  \item \textbf{parameters}: Parameter \texttt{dtype}\indexTtt{INIT}{dtype} is used for element type,
-  and \texttt{dim1}\indexTtt{INIT}{dim1}, \texttt{dim2}\indexTtt{INIT}{dim2}, \texttt{dim3}\indexTtt{INIT}{dim3} are used for dimension specification.
+  \item \textbf{parameters}: Parameter \ALGkey{dtype}\indexTtt{INIT}{dtype} is used for element type,
+  and \ALGkey{dim1}\indexTtt{INIT}{dim1}, \ALGkey{dim2}\indexTtt{INIT}{dim2}, \ALGkey{dim3}\indexTtt{INIT}{dim3} are used for dimension specification.
 \end{itemize}
 \begin{warning}
   Please be \textbf{consistent}!
@@ -477,9 +477,83 @@ The initialization target can be specified in two ways:
 
   However, there are also a few exceptions for user's convenience.
   Though row vector (\texttt{r}) is regarded as a matrix,
-  you can still specify its dimension with only one parameter on \texttt{dim1}.
+  you can still specify its dimension with only one parameter on \ALGkey{dim1}.
   For a scalar initialization, the value can directly follow \texttt{=}.
 \end{warning}
+The parameters are listed in Table~\ref{d:tab:init_params}.
+\begin{table}[htbp]
+  \caption{ALG \texttt{INIT} function parameters.}
+  \label{d:tab:init_params}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{ccX}
+    \toprule
+    \tbhead{Position} & \tbhead{Parameter Key} & \tbhead{Descriptions} \\
+    \midrule
+    1 & \ALGkey{dim1}\indexTtt{INIT}{dim1} & Size of the first dimension (for vector). \\
+    2 & \ALGkey{dim2}\indexTtt{INIT}{dim2} & Size of the second dimension (for vector and matrix). \\
+    3 & \ALGkey{dim3}\indexTtt{INIT}{dim3} & Size of the third dimension (for vector, matrix and tensor). \\\hdashline
+    4 & \ALGkey{fill}\indexTtt{INIT}{fill} & Element filling mode.
+      \ALGval{randn}\indexTTtt{INIT}{fill}{randn} for standard normal distribution $\mathcal{N}(0,1)$,
+      \ALGval{randu}\indexTTtt{INIT}{fill}{randu} for standard uniform distribution $\mathcal{U}(0,1)$,
+      \ALGval{zeros}\indexTTtt{INIT}{fill}{zeros} for filling as 0,
+      \ALGval{ones}\indexTTtt{INIT}{fill}{ones} for filling as 1.
+      Default is \ALGval{zeros}. \\\hdashline
+    5 & \ALGkey{scale}\indexTtt{INIT}{scale} & Scale of the value.
+      This works like multiplying a value after the initialization by \ALGkey{fill}. \\\hdashline
+    6 & \ALGkey{dtype}\indexTtt{INIT}{dtype} & Element data type.
+      This is the one character \hyperref[d:subsubsec:prefix]{prefix} like \texttt{c}, \texttt{i}.
+      The default value is complex (\texttt{c}). \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+For initialization of a row vector (\texttt{r}), you may just use one dimension.
+For initialization of a scalar (dimension as 0), you can specify the value directly after \texttt{=},
+but if you want to use \ALGkey{fill} and \ALGkey{scale}, you must specify the parameter key.
+\begin{tip}
+  Since the development of ALG concentrates on matrix operations,
+  the initialization also performs in a matrix-oriented way.
+  Please refer to \hyperref[d:sec:data_type]{data type of ALG language} if you are not sure
+  how to use the data type.
+\end{tip}
+\subsubsection*{Example}
+\begin{example}[Example of INIT]~
+  \begin{lstlisting}[language=mmcesim-sim]
+a = INIT 4 3 fill=ones scale=4 dtype=c # a matrix
+b::r = INIT 10 scale="-1+i" # row vector (viewed as a matrix)
+pi::f0c = INIT 3.1415926 # a const float
+random_number = INIT fill=randn scale=-2
+  \end{lstlisting}
+  Equivalent C++ Code
+  \begin{lstlisting}[language=c++]
+cx_mat a = (4) * arma::ones<cx_mat>(4, 3);
+cx_mat b = (-1 + i) * arma::zeros<cx_mat>(1, 10);
+const double pi = 3.1415926;
+std::complex<double> random_number = (-2) * arma::randn<std::complex<double>>();
+  \end{lstlisting}
+\end{example}
+
+\funcsec{LOG}
+Write to log file.
+\subsubsection*{Example}
+\begin{example}[Example of INIT]~
+  \begin{lstlisting}[language=mmcesim-sim]
+LOG [INFO] A user-defined message.
+  \end{lstlisting}
+  Log file: \texttt{mmcesim.log}
+  \begin{lstlisting}[]
+[INFO] $ LOG [INFO] A user-defined message.
+[INFO] * FUNCTION: LOG
+[INFO] * PARAMS:
+[INFO]    > {}={[INFO]}::{}
+[INFO]    > {}={A}::{}
+[INFO]    > {}={user-defined}::{}
+[INFO]    > {}={message.}::{}
+[INFO] A user-defined LOG message.
+  \end{lstlisting}
+\end{example}
+
+\funcsec{LOOP}
+Loop with iteration counter.
 
 \section{Calculation (CALC)}\index{calculation}\index{CALC}\label{d:sec:calc}
 
