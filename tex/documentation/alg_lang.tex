@@ -975,3 +975,33 @@ there are macros defined above the level of ALG language.
 That is, some configuration variables may be used in ALG.
 
 \section{ALG Library}\index{ALG library}\label{d:sec:alg_lib}
+
+\subsection{Basics}
+
+ALG Library is a collection of standard ALG functions that can be safely \lfunc{CALL}ed.
+Moreover, in function \lfunc{ESTIMATE}, predefined compressed sensing algorithms are called which are also in the ALG library.
+
+Like \textsc{Matlab}, the inside function name should be the same as the file name except for the \texttt{.alg} file extension.
+For example, OMP function is defined in file \texttt{/include/mmcesim/OMP.alg}.
+
+\subsection{Algorithms}
+
+\subsubsection{OMP}\index{OMP}
+Orthogonal matching pursuit\index{orthogonal matching pursuit}. (\texttt{OMP.alg})
+
+\subsubsection{OMPL}\index{OMPL}
+OMP List\index{OMP list}\index{orthogonal matching pursuit list}. (\texttt{OMPL.alg})
+
+This algorithm is proposed in \textit{OMPL-SBL Algorithm for Intelligent Reflecting Surface-Aided mmWave Channel Estimation} (TVT'23) \cite{zhao2023ompl},
+extending OMP with the $k$-best idea.
+
+\subsubsection{Oracle LS}\index{Oracle LS}
+Oracle least square (LS). (\texttt{Oracle\_LS.alg})
+
+\subsubsection{LS Support}\index{LS support}
+Least square (LS) with specified support. (\texttt{LS\_Support.alg})
+
+\subsection{Other Utilities}
+
+\subsubsection{max\_n}\index{max\_n}
+Obtain the largest $n$ elements from a vector. (\texttt{max\_n.alg})
