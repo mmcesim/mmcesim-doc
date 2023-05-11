@@ -700,7 +700,7 @@ Let's have a look at the example below.
 \begin{lstlisting}[language=mmcesim-sim]
 \sqrt(\accu(\pow(\abs(A_{1,:,2:5} - B^{-1}), 2))) * c * A @ (D ./ E^T) + \sin(f_{2})
 \end{lstlisting}
-Well, that looks like \LaTeX{}, right?
+Well, that looks like \LaTeX{}\index{LaTeX@\LaTeX{}}, right?
 The familiar \texttt{\textbackslash} character starting a command
 (sorry, that's called macro in \LaTeX{}),
 and inverse as \verb|^{-1}|, transpose \verb|^T|, and subscript with \verb|_{}|!
@@ -717,7 +717,261 @@ Well, let's write the above example in LaTeX (through some informal \textsc{Matl
 \left\|\mathbf{A}_{1,:,2:5}-\mathbf{B}^{-1}\right\|_2\cdot c\mathbf{A}\cdot\left(\mathbf{D}\oslash\mathbf{E}^\mathsf{T}+\mathrm{ones}(\sin(\mathbf{f}_2))\right)
   \end{lstlisting}
 \end{example}
+\begin{tip}
+  As a matter of fact, that can be even more like \LaTeX{}
+  with all brackets can be converted to \verb`{}`, though parameters are separated by \verb`,` not another \verb`{}`.
+  For \LaTeX{} fans, you may even use \verb`^\star` or \verb`^\ast` for conjugate in addition to the normal \verb`^*`.
+  Happy \TeX ing!
 
-\section{Macro}\index{macro}
+  To make the language simple and efficiently convertible to C++, Python and \textsc{Matlab}/Octave,
+  some syntaxes from Python and Matlab are adopted in addition to the \LaTeX{} look.
+\end{tip}
+
+\subsection{Syntax Basics}\index{CALC!syntax}\label{d:subsec:CALC_syntax_basics}
+There are \hyperref[d:subsec:CALC_cmd]{commands} starting with backslash\index{backslash} (\texttt{\textbackslash}\indextt{\textbackslash}),
+\hyperref[d:subsec:CALC_oper]{operators} and \hyperref[d:subsec:CALC_sub]{subscripts}, \hyperref[d:subsec:CALC_super]{superscripts}.
+\begin{warning}
+  \textbf{Variable Naming}
+  \begin{itemize}
+    \item Variable names should not contain reserved characters \verb`!@#$%^&*()[]{}\|/-+=~,.<>?:;"'`\verb|`|.
+    \item Variable name should also not end with underscore (\verb`_`).
+    \item Digit can not be the first character of variable name.
+    \item Variable name should not clash with reserved keywords.
+  \end{itemize}
+\end{warning}
+\begin{remark}
+  Whitespace does not matter in CALC, which are removed before parsing.
+\end{remark}
+
+\subsection{Operators}\index{operators}\index{CALC!operators}\label{d:subsec:CALC_oper}
+\subsubsection{Operator List}
+The operator list is shown in Table~\ref{d:tab:CALC_operators}.
+\begin{table}[htbp]
+  \caption{CALC operators.}
+  \label{d:tab:CALC_operators}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{cX}
+    \toprule
+    \tbhead{Operators} & \tbhead{Description} \\
+    \midrule
+    \texttt{+}\indextt{+}, \texttt{-}\indextt{-} & (Unary/Binary) plus/minus \\
+    \texttt{*}\indextt{*} & Scalar and scalar multiplication, scalar and matrix multiplication \\
+    \texttt{@}\indextt{@} & Matrix and matrix multiplication \\
+    \texttt{.*}\indextt{.*}, \texttt{./}\indextt{./} & Element-wise multiplication, division \\
+    \texttt{!}\indextt{!} & Logical \textsc{Not} \\
+    \texttt{()}\indextt{()}, \texttt{\{\}}\indextt{\{\}} & Command call \\
+    \texttt{<}\indextt{<}, \texttt{<=}\indextt{<=}, \texttt{>}\indextt{>}, \texttt{>=}\indextt{>=} & Relational operator $<, \leq, >, \geq$ \\
+    \texttt{==}\indextt{==}, \texttt{!=}\indextt{!=} & Relational $=$ and $\neq$ \\
+    \texttt{\&\&}\indextt{\&\&} & Logical \textsc{And} \\
+    \texttt{||}\indextt{||} & Logical \textsc{Or} \\
+    \texttt{=}\indextt{=} & Assign \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+\begin{warning}
+  Matrix and matrix multiplication is different from matrix scalar and scalar scalar multiplication.
+  You should distinguish the use of \verb`*` and \verb`@`.
+  (This is like the Python syntax.)
+  
+  Element-wise multiplication \verb`.*` is different from matrix multiplication \verb`@`.
+  (This is like the \textsc{Matlab} syntax.)
+\end{warning}
+
+\subsubsection{Operator Precedence}\index{operator prededence}\index{precedence}
+Table~\ref{d:tab:CALC_oper_precedence} lists the precedence and associativity of ALG CALC operators.
+Operators are listed top to bottom, in descending precedence.\footnote{%
+  The table is so similar to that of C++.
+  Well, indeed, and it is adapted from
+  \href{https://en.cppreference.com/w/c/language/operator_precedence}{C++ Reference}.%
+}
+\begin{table}[htbp]
+  \caption{CALC operator precedence.}
+  \label{d:tab:CALC_oper_precedence}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{ccYc}
+    \toprule
+    \tbhead{Precedence} & \tbhead{Operators} & \tbhead{Description} & \tbhead{Associativity} \\
+    \midrule
+    1 & \texttt{()}\indextt{()}, \texttt{\{\}}\indextt{\{\}} & Command call & Left-to-right \\\hdashline
+    2 & \texttt{\^{}T}\indextt{\^{}T}, \texttt{\^{}H}\indextt{\^{}H}, \texttt{\^{}t}\indextt{\^{}t}, \texttt{\^{}i}\indextt{\^{}i}, \texttt{\^{}*}\indextt{\^{}*}, \texttt{\^{}\{-1\}}\indextt{\^{}\{-1\}} & Matrix superscript & Left-to-right \\\hdashline
+    3 & \texttt{\_\{\}}\indextt{\_\{\}} & Matrix subscript & Left-to-right \\\hdashline
+    4 & \texttt{!}\indextt{!}, \texttt{+}\indextt{+}, \texttt{-}\indextt{-} & Logical NOT, unary plus/minus & Right-to-left \\\hdashline
+    5 & \texttt{*}\indextt{*}, \texttt{@}\indextt{@}, \texttt{.*}\indextt{.*}, \texttt{./}\indextt{./} & Matrix (and element-wise) multiplication, division & Left-to-right \\\hdashline
+    6 & \texttt{+}\indextt{+}, \texttt{-}\indextt{-} & Addition and subtraction & Left-to-right \\\hdashline
+    7 & \texttt{<}\indextt{<}, \texttt{<=}\indextt{<=}, \texttt{>}\indextt{>}, \texttt{>=}\indextt{>=} & Relational operator $<, \leq, >, \geq$ & Left-to-right \\\hdashline
+    8 & \texttt{==}\indextt{==}, \texttt{!=}\indextt{!=} & Relational $=$ and $\neq$ & Left-to-right \\\hdashline
+    9 & \texttt{\&\&}\indextt{\&\&} & Logical AND & Left-to-right \\\hdashline
+    10 & \texttt{||}\indextt{||} & Logical OR & Left-to-right \\\hdashline
+    11 & \texttt{=}\indextt{=} & Assign & Right-to-left \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Commands}\index{commands}\index{CALC!commands}\label{d:subsec:CALC_cmd}
+
+\subsubsection{Command Usage Basics}
+Here are the basic rules for command usage:
+\begin{itemize}
+  \item Commands start with character \verb`\`\indextt{\textbackslash};
+  \item Command call has parameter list inside brackets \verb`()`\indextt{()},
+    and you may optionally use \verb`{}`\indextt{\{\}} if you want the syntax more like \LaTeX{};
+  \item Parameters are separated by comma (\verb`,`\indextt{,}).
+\end{itemize}
+The function naming convention mainly follows that of
+\href{https://arma.sourceforge.net/docs.html}{Armadillo}\index{Armadillo} which is also similar to \textsc{Matlab}.
+
+\subsubsection{\texttt{\textbackslash{}dictionary}}\indextt{\textbackslash{}dictionary}
+Generate a dictionary\index{dictionary} matrix for beamspace (virtual) representation.
+\paragraph{Math Representation}
+The complex dictionary matrix is used in compressed sensing (CS).
+For a uniform linear array (ULA) with size $M$ and grid size $M^G$,
+the dictionary $\mathbf{V}\in\mathbb{C}^{M\times M^G}$ is defined as
+\begin{equation}\label{d:eq:dictionary}
+  \frac1{\sqrt{M}}\exp\left(-2\pi i\cdot d\cdot\mathbf{x}_M\mathbf{u}_{M^G}^\mathsf{H}\right),
+\end{equation}
+where $\mathbf{x}_M=[0,1,2,\cdots,M-1]^\mathsf{T}$,
+$\mathbf{u}_{M^G}=[-1,-1+\frac2{M^G},-1+\frac4{M^G},\cdots,1-\frac2{M^G}]^\mathsf{T}$
+and $d$ is the antenna spacing which is assumed to be $1/2$ in the current version.
+
+For a uniform planar array (UPA) with size $M=M_xM_y$,
+the dictionary is defined as
+\begin{equation}
+  \mathbf{V}_M=\mathbf{V}_{M_x}\otimes\mathbf{V}_{M_y},
+\end{equation}
+where $\otimes$ denotes the Kronecker product,
+and $\mathbf{V}_{M_x}$ and $\mathbf{V}_{M_y}$ can both be calculated with \eqref{d:eq:dictionary}.
+\paragraph{ALG Implementation}
+The return value is the generated dictionary matrix which has type \texttt{c2c} (const complex matrix).
+The parameters are shown in Table~\ref{d:tab:CALC_cmd_dictionary}.
+\begin{table}[htbp]
+  \caption{CALC \texttt{\textbackslash{}dictionary} parameters.}
+  \label{d:tab:CALC_cmd_dictionary}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{ccX}
+    \toprule
+    \tbhead{Position} & \tbhead{Meaning} & \tbhead{Description} \\
+    \midrule
+    1 & $M_x$ & ULA size or UPA $x$ dimension size. \\
+    2 & $M_y$ & $1$ for ULA and $y$ dimension size for UPA. \\
+    3 & $M_x^G$ & ULA grid size or UPA $x$ dimension grid size. \\
+    4 & $M_y^G$ & $1$ for ULA and $y$ dimension grid size for UPA. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+\paragraph{Example}
+This is how you can use \ALG{\dictionary} in ALG.
+\begin{example}[Example of \textbackslash{}dictionary]~
+  \begin{lstlisting}[language=mmcesim-sim]
+# UPA Antenna size: 16x6, Grid size: 16x16
+D = \dictionary(16, 8, 16, 16)
+# This creates a new instance of dictionary matrix
+D::mc = NEW \dictionary(16, 8, 16, 16)
+# Use macro to create a dictionary at the transmitter side
+D::mc = NEW `DICTIONARY.T`
+  \end{lstlisting}
+\end{example}
+\begin{tip}
+  For simplicity, you may use \hyperref[d:sec:macro]{macro}
+  to simplicity the \ALG{\dictionary} command.
+  The \ALG{`DICTIONARY.T`} and \ALG{`DICTIONARY.R`} macros
+  can be used to represent the dictionary at the transmitter side and receiver side
+  without specifying the parameters as long as they are specified in the \hyperref[d:subsec:sim_config_nodes]{\texttt{nodes}}
+  section of \texttt{.sim} configuration.
+\end{tip}
+
+\subsection{Subscripts}\index{subscripts}\index{CALC!subscripts}\label{d:subsec:CALC_sub}
+Subscripts take the subview of vector/matrix/tensor.
+The syntax is \verb`_{<sub>}` (a leading underscore \texttt{\_}\indextt{\_} as in \LaTeX{}),
+where the brackets cannot be omitted
+even if \texttt{<sub>} contains only one character.
+\begin{warning}
+  The subscript syntax imposes a requirement for variables:
+  variables cannot be ended with character underscore (\texttt{\_}).
+
+  Due to internal underscore is allowed for variable names (see \S\ref{d:subsec:CALC_syntax_basics}),
+  the subscript is only recognized when brackets \texttt{\{\}} exist.
+\end{warning}
+\subsubsection{Foo Subscripts}
+Well, some subscripts just do nothing, so they are removed.
+They are \verb`_{}`, \verb`_{:}`, \verb`_{:,:}`, \verb`_{:,:,:}`.
+\subsubsection{Valid Subscripts}
+The contents inside \verb`_{}` of valid subscripts are similar
+to \textsc{Matlab} syntax except for indices start from 0.
+\begin{itemize}
+  \item For a vector \ALG`x`, use \ALG`x_{n}` to access the $n$-th element,
+    and \ALG`x_{begin:end}` to access a range of elements.
+  \item For a matrix \ALG`A`, use \ALG`A_{i,j}` to access an individual element,
+    \ALG`A_{i,:}` to access an entire row, \ALG`A_{:,j}` to access an entire column,
+    \ALG`A_{i:j,l:m}` to access a range of rows and columns, and \ALG`A_{:,:,k}` to access a slice of the matrix.
+  \item For a tensor \ALG`Z`, use \ALG`Z_{i,j,k}` to access an individual element,
+    \ALG`Z_{:,:,k}` to access a slice of the tensor, and \ALG`Z_{:,:,indices}` to access multiple slices where \texttt{indices} is of type \texttt{u1}.
+    Accessing indices vector of type \texttt{u1} for a tensor is only supported for the last dimension.
+\end{itemize}
+Here are some examples:
+\begin{example}[Example of Subscripts]~
+  \begin{lstlisting}[language=mmcesim-sim]
+# x is a vector (dim = 1)
+# A is a matrix (dim = 2)
+# Z is a tensor (dim = 3)
+x_{2} # [scalar] the 2-nd element of vector
+x_{1:4} # [vector] elements 1,2,3,4 of vectors
+x_{index} # [scalar] (index of type u0) the index-element of vector
+x_{indices} # [vector] (indices of type u1) elements of indices in vector
+A_{3,2} # [scalar] the element at position (3,2)
+A_{2,index} # [scalar] (index of type u0)
+A_{2,:} # [rowvec] the 2-nd row
+A_{:,3} # [vector] the 3-nd column
+A_{1,3:5} # [vector] elements (1,3),(1,4),(1,5)
+A_{2:4,indices} # [matrix] (indices of type u1)
+A_{15} # [scalar] the 15-th element in the flattened matrix as vector
+A^T_{1,2} # [scalar] element (1,2) of A^T, i.e. element (2,1) of A
+A_{1:3,:}^H # [scalar] the conjugate transpose of sub matrix (Mind the sequence!)
+Z_{0,0,0} # [scalar] element (0,0,0) of tensor
+Z_{:,:,2} # [matrix] the 2-nd slice of tensor
+Z_{:,:,indices} # [tensor] (indices of type u1) slices of tensor
+  \end{lstlisting}
+\end{example}
+\begin{warning}
+  Using indices vector of type \texttt{u1} for a tensor is only supported
+  for the last dimension (i.e.\@ the slice).
+\end{warning}
+
+\subsection{Superscripts}\index{superscripts}\index{CALC!superscripts}\label{d:subsec:CALC_super}
+Supper scripts are led by caret (\verb`^`\indextt{\^{}}) as in \LaTeX{}.
+\subsubsection{Transpose and Conjugate Transpose}\index{transpose}\index{conjugate transpose}
+\paragraph{Real Matrices}
+The transpose for a real matrix is \verb`^t`\indextt{\^{}t} or \verb`^{t}`\indextt{\^{}\{\}t}.
+\paragraph{Complex Matrices}
+The transpose for a complex matrix is \verb`^T`\indextt{\^{}T} or \verb`^{T}`\indextt{\^{}\{T\}},
+and the conjugate transpose (Hermitian transpose\index{Hermitian transpose})
+for a complex matrix is \verb`^H`\indextt{\^{}H} or \verb`^{H}`\indextt{\^{}\{H\}}.
+\begin{warning}
+  There can be C++ compiling error if \verb`^T` and \verb`^t` are misused!
+\end{warning}
+\subsubsection{Conjugate}\index{conjucate}
+The conjugate of a complex number/vector/matrix/tensor is
+\verb`^*`\indextt{\^{}*},
+\verb`^{*}`\indextt{\^{}\{*\}},
+\verb`^\star`\indextt{\^{}\textbackslash{}star},
+\verb`^{\star}`\indextt{\^{}\{\textbackslash{}star\}},
+\verb`^\ast`\indextt{\^{}\textbackslash{}ast} or
+\verb`^{\ast}`\indextt{\^{}\{\textbackslash{}ast\}}.
+(Wow, so \TeX y!!!)
+\begin{warning}
+  You should \textbf{not} calculate the conjugate for a real number/vector/matrix/tensor.
+\end{warning}
+\subsubsection{Inverse}
+The inverse of a square matrix is
+\verb`^{-1}`\indextt{\^{}\{-1\}},
+\verb`^i`\indextt{\^{}i} or
+\verb`^I`\indextt{\^{}I}.
+
+For a non-square matrix, you may use
+\ALG{\pinv}\indextt{\textbackslash{}pinv} (pseudo-inverse\index{pseudo-inverse}) command.
+
+\section{Macro}\index{macro}\label{d:sec:macro}
+For simulation convenience,
+there are macros defined above the level of ALG language.
+That is, some configuration variables may be used in ALG.
 
 \section{ALG Library}\index{ALG library}\label{d:sec:alg_lib}
