@@ -295,14 +295,47 @@ For each of its elements, you need to specify the following fields.
 The \texttt{id} is used in \hyperref[d:subsec:sim_config_channels]{\texttt{channels}} so that we know the direction of channel.
 
 \CLIConfigLevelII{nodes}{role}[1][RIS]
+Valid values include
+\texttt{transmitter} (\texttt{Tx}),
+\texttt{receiver} (\texttt{Rx}),
+and \texttt{RIS} (\texttt{IRS}, default value).
+
+There should be one and only one transmitter and one receiver.
 
 \CLIConfigLevelII{nodes}{num}[1][1]
+The field \texttt{num} can be used to replicate several copies of the same node.
+This is often used for multi-user scenarios.
+Currently, this value is discarded, and the number is always 1.
 
 \CLIConfigLevelII{nodes}{size}[1]
+The size means the antenna/element number for a node.
+For transmitters and receivers, it is the antenna number.
+For RIS, it is the number of reflecting elements.
+The value is a scalar for uniform linear array (ULA),
+and is a 2-value array (for example \texttt{[8, 4]}) for uniform planar array (UPA).
+For a 2-value array that has the second value set to 1,
+it is still regarded as a ULA.
+
+Its corresponding \hyperref[d:sec:macro]{macro}s in \hyperref[d:sec:calc]{CALC} are
+\ALG{`SIZE.T.x`}, \ALG{`SIZE.T.y`}, \ALG{`SIZE.T`},
+\ALG{`SIZE.R.x`}, \ALG{`SIZE.R.y`}, \ALG{`SIZE.R`}, \ALG{`SIZE.*`}.
 
 \CLIConfigLevelII{nodes}{beam}[1]
+The number of beams.
+Dimensions similar to \hyperref[d:subsubsec:sim_config_nodes_size]{\texttt{size}}.
+Its corresponding \hyperref[d:sec:macro]{macro}s in \hyperref[d:sec:calc]{CALC} are
+\ALG{`BEAM.T.x`}, \ALG{`BEAM.T.y`}, \ALG{`BEAM.T`},
+\ALG{`BEAM.R.x`}, \ALG{`BEAM.R.y`}, \ALG{`BEAM.R`}, \ALG{`BEAM.*`}.
 
 \CLIConfigLevelII{nodes}{grid}[1][same]
+The number of grids.
+Dimensions similar to \hyperref[d:subsubsec:sim_config_nodes_size]{\texttt{size}}.
+The default value is \texttt{same}, which denotes the number of beams is the same as the number of antennas
+(or the number of RIS reflecting elements).
+
+Its corresponding \hyperref[d:sec:macro]{macro}s in \hyperref[d:sec:calc]{CALC} are
+\ALG{`GRID.T.x`}, \ALG{`GRID.T.y`}, \ALG{`GRID.T`},
+\ALG{`GRID.R.x`}, \ALG{`GRID.R.y`}, \ALG{`GRID.R`}, \ALG{`GRID.*`}.
 
 \CLIConfigLevelII{nodes}{beamforming}[1]
 For a \hyperref[d:subsec:sim_config_nodes]{node} with \hyperref[d:subsubsec:sim_config_nodes_role]{role}
@@ -318,25 +351,35 @@ For RIS, this is the variable name of the reflection tensor.
 Possible value is \texttt{random} (default) and \texttt{custom}.
 
 \CLIConfigLevelIII{nodes}{beamforming}{formula}[2]
-Custom beamforming formula.
+Custom beamforming formula in ALG.
+This is required if you set \hyperref[d:par:sim_config_nodes_beamforming_scheme]{\texttt{scheme}} to \texttt{custom}.
 
 \CLIConfigLevelI{macro}
 User-defined macros.
 See \S\ref{d:sec:macro} for details.
 
 \CLIConfigLevelI{channels}[1]
+This is a sequence (array) of channel links.
+The settings for each channel link is shown below.
 
 \CLIConfigLevelII{channels}{id}[1]
+Similar to \hyperref[d:subsubsec:sim_config_nodes_id]{\texttt{id}} in \hyperref[d:subsec:sim_config_nodes]{nodes},
+each channel link has a unique identifier as in field \texttt{id}.
 
 \CLIConfigLevelII{channels}{from}[1]
+The node \hyperref[d:subsubsec:sim_config_nodes_id]{\texttt{id}} which the link channel is transmitted from.
 
 \CLIConfigLevelII{channels}{to}[1]
+The node \hyperref[d:subsubsec:sim_config_nodes_id]{\texttt{id}} which the link channel transmits to.
 
 \CLIConfigLevelII{channels}{sparsity}[1]
+The sparsity (number of clusters) of the channel.
 
 \CLIConfigLevelII{channels}{gains}[1][normal]
 
 \CLIConfigLevelI{sounding}[1]
+Information related to the sounding procedure is defined here.
+The position of \texttt{sounding} is shown in Fig.~\ref{d:fig:sequence_sim}.
 
 \CLIConfigLevelII{sounding}{variables}[1]
 Channel variable names are defined here, including
@@ -349,28 +392,92 @@ Channel variable names are defined here, including
 \CLIConfigLevelI{preamble}
 This is the code part before main simulation
 (including sounding, estimation and report generation).
+The position of \texttt{preamble} is shown in Fig.~\ref{d:fig:sequence_sim}.
 \begin{tip}
   Custom functions can be defined here.
 \end{tip}
 This part is specified using the \hyperref[d:chap:alg_lang]{ALG language}.
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    , n/.style = {
+      , draw
+      , fill = #1!20
+      , minimum width = 64mm
+      , minimum height = 6.5mm
+    }
+    , nt/.style = {
+      , darkgray
+      , font = \footnotesize\sffamily
+      , align = left
+    }
+    , arr/.style = {
+      , -latex
+    }
+    , thick
+    , font = \sffamily
+    , node distance = 4mm and 4mm
+  ]
+    \node (alg-1) [n = myblued, minimum width = 25mm] {Algorithm \#1};
+    \node (alg-n) [n = myblued, minimum width = 25mm, right = 10mm of alg-1] {Algorithm \#\textit{n}};
+    \foreach \x in {1, n} {
+      \node (con-\x) [below = of alg-\x, n = mygreen, minimum width = 25mm] {Conclusion};
+      \draw [arr] (alg-\x) -- (con-\x);
+    }
+    \foreach \x in {alg, con} {
+      \node [right = 2mm of \x-1] {$\bm{\cdots}$};
+    }
+    \begin{scope}[on background layer]
+      \node (est) [n = gray, fit = {([yshift = 6mm]alg-1.north west)(con-n)}, thick] {};
+    \end{scope}
+    \node (est-text) [anchor = north, inner sep = 1.2mm, minimum width = 64mm] at (est.north) {Estimation};
+    \node (app) [below = of est, n = mypink] {Appendix};
+    \node (sdn) [above = of est, n = myyellow] {Sounding};
+    \node (pre) [above = of sdn, n = mypurple] {Preamble};
+    \node (std) [above = of pre, n = myred] {Standard ALG};
+    \node (set) [above = of std, n = myblues] {\textit{Initial Settings}};
+    \draw [arr] (set) -- (std);
+    \draw [arr] (std) -- (pre);
+    \draw [arr] (pre) -- (sdn);
+    \draw [arr] (sdn) -- (est);
+    \draw [arr] (est) -- (app);
+    \node [nt, right = of set] {This is automatically done by the mmCEsim compiler.};
+    \node [nt, right = of std] {Load algorithm implementations set in \S\ref{d:par:sim_config_simulation_jobs_algorithms}.};
+    \node [nt, right = of pre] {See \S\ref{d:subsec:sim_config_preamble}.};
+    \node [nt, right = of sdn] {See \S\ref{d:subsec:sim_config_sounding}.};
+    \node [nt, right = of est-text] {See \S\ref{d:subsec:sim_config_estimation}.};
+    \node [nt, right = 6mm-\pgflinewidth of alg-n] {See \S\ref{d:par:sim_config_simulation_jobs_algorithms}.};
+    \node [nt, right = 6mm-\pgflinewidth of con-n] {See \S\ref{d:subsec:sim_config_conclusion}.};
+    \node [nt, right = of app] {See \S\ref{d:subsec:sim_config_appendix}.};
+  \end{tikzpicture}%
+  \caption{Sequence of simulation.}
+  \label{d:fig:sequence_sim}
+\end{figure}
 
 \CLIConfigLevelI{estimation}[1][auto]
 This part is specified using the \hyperref[d:chap:alg_lang]{ALG language}.
+The position of \texttt{estimation} is shown in Fig.~\ref{d:fig:sequence_sim}.
 
 \CLIConfigLevelI{conclusion}
 This part is specified using the \hyperref[d:chap:alg_lang]{ALG language}.
+The position of \texttt{conclusion} is shown in Fig.~\ref{d:fig:sequence_sim}.
 
 \CLIConfigLevelI{appendix}
 This is the code part after all jobs are done.
-
+The position of \texttt{appendix} is shown in Fig.~\ref{d:fig:sequence_sim}.
 This part is specified using the \hyperref[d:chap:alg_lang]{ALG language}.
 
 \CLIConfigLevelI{simulation}[1]
+The main simulation configurations.
 
 \CLIConfigLevelII{simulation}{backend}[1][cpp]
+Possible values are
+\texttt{cpp} (C++ with Armadillo library),
+\texttt{python} (Python with NumPy library),
+\texttt{matlab}, \texttt{octave}.
+This sets the language it exports to and the backend simulation bases on.
 
 \CLIConfigLevelII{simulation}{jobs}[1]
-
 Simulation jobs.
 Each job is independent of one another.
 
@@ -392,6 +499,9 @@ The number of pilot overheads.
 \CLIConfigLevelIII{simulation}{jobs}{algorithms}[1]
 
 \CLIConfigLevelII{simulation}{report}
+Currently, this field is ignored.
+Both plain text report (\texttt{.rpt})
+and \LaTeX{} report will be generated.
 
 \section{Algorithm}
 
